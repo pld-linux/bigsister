@@ -3,7 +3,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.97p2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Networking
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/%{name}/big-sister-%{version}.tar.gz
@@ -190,9 +190,9 @@ fi
 %preun
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/bigsister ]; then
-		/etc/rc.d/init.d/postfix stop >&2
+		/etc/rc.d/init.d/bigsister stop >&2
 	fi
-	/sbin/chkconfig --del postfix
+	/sbin/chkconfig --del bigsister
 fi
 
 %postun
