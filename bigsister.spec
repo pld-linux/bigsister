@@ -3,7 +3,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.97p2
-Release:	3
+Release:	4
 License:	GPL
 Group:		Networking
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/%{name}/big-sister-%{version}.tar.gz
@@ -17,11 +17,12 @@ BuildRequires:	rpm-perlprov >= 4.0.2-47
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
 Prereq:		/bin/id
+Prereq:		/sbin/chkconfig
 Prereq:		/usr/bin/getgid
-Prereq:		/usr/sbin/useradd
-Prereq:		/usr/sbin/userdel
 Prereq:		/usr/sbin/groupadd
 Prereq:		/usr/sbin/groupdel
+Prereq:		/usr/sbin/useradd
+Prereq:		/usr/sbin/userdel
 Provides:	perl(Monitor::uxmon)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -128,7 +129,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %patch2 -p1
 
 %build
-perl -pi -e 's/^(bin:.*)check/\1/;s/^(install-.*) bin/\1/' Makefile
+%{__perl} -pi -e 's/^(bin:.*)check/\1/;s/^(install-.*) bin/\1/' Makefile
 %{__make} bin \
 	USER=bs \
 	DEST=%{_libdir}/bs \
@@ -210,9 +211,7 @@ fi
 
 %postun server
 if [ -f /var/lock/subsys/bigsister ]; then
-	/etc/rc.d/init.d/bigsister restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/bigsister start\" to start Big Sister." >&2
+	/etc/rc.d/init.d/bigsister stop >&2
 fi
 
 %files
