@@ -6,20 +6,6 @@ Version:	0.97p2
 Release:	1
 License:	GPL
 Group:		Networking
-Group(cs):	Sí»ové
-Group(da):	Netværks
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(fr):	Réseau
-Group(is):	Net
-Group(it):	Rete
-Group(no):	Nettverks
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
-Group(pt):	Rede
-Group(ru):	óÅÔÅ×ÙÅ
-Group(sl):	Omre¾ni
-Group(sv):	Nätverk
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/%{name}/big-sister-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
@@ -63,20 +49,6 @@ Wielka Siostra - klon Wielkiego Brata.
 Summary:	Big Sister server
 Summary(pl):	Serwer Big Sister
 Group:		Networking
-Group(cs):	Sí»ové
-Group(da):	Netværks
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(fr):	Réseau
-Group(is):	Net
-Group(it):	Rete
-Group(no):	Nettverks
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
-Group(pt):	Rede
-Group(ru):	óÅÔÅ×ÙÅ
-Group(sl):	Omre¾ni
-Group(sv):	Nätverk
 Prereq:		%{name} = %{version}
 
 %description server
@@ -90,20 +62,6 @@ generuj±ca alarmy.
 Summary:	Big Sister plugin for minitoring LDAP
 Summary(pl):	Wtyczka Big Sister do monitorowania LDAP
 Group:		Networking
-Group(cs):	Sí»ové
-Group(da):	Netværks
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(fr):	Réseau
-Group(is):	Net
-Group(it):	Rete
-Group(no):	Nettverks
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
-Group(pt):	Rede
-Group(ru):	óÅÔÅ×ÙÅ
-Group(sl):	Omre¾ni
-Group(sv):	Nätverk
 Requires:	%{name} = %{version}
 
 %description ldap
@@ -116,20 +74,6 @@ Wtyczka Big Sister do monitorowania LDAP.
 Summary:	Big Sister plugin for minitoring LDAP using Mozilla::LDAP
 Summary(pl):	Wtyczka Big Sister do monitorowania LDAP przy u¿yciu Mozilla::LDAP
 Group:		Networking
-Group(cs):	Sí»ové
-Group(da):	Netværks
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(fr):	Réseau
-Group(is):	Net
-Group(it):	Rete
-Group(no):	Nettverks
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
-Group(pt):	Rede
-Group(ru):	óÅÔÅ×ÙÅ
-Group(sl):	Omre¾ni
-Group(sv):	Nätverk
 Requires:	%{name} = %{version}
 
 %description ldap_mozilla
@@ -142,20 +86,6 @@ Wtyczka Big Sister do monitorowania LDAP przy u¿yciu Mozilla::LDAP.
 Summary:	Big Sister plugin for minitoring Oracle
 Summary(pl):	Wtyczka Big Sister do monitorowania Oracle
 Group:		Networking
-Group(cs):	Sí»ové
-Group(da):	Netværks
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(fr):	Réseau
-Group(is):	Net
-Group(it):	Rete
-Group(no):	Nettverks
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
-Group(pt):	Rede
-Group(ru):	óÅÔÅ×ÙÅ
-Group(sl):	Omre¾ni
-Group(sv):	Nätverk
 Requires:	%{name} = %{version}
 Requires:	perl-DBD-Oracle
 
@@ -169,20 +99,6 @@ Wtyczka Big Sister do monitorowania Oracle.
 Summary:	Big Sister plugin for monitoring radius server
 Summary(pl):	Wtyczka Big Sister do monitorowania serwera radius
 Group:		Networking
-Group(cs):	Sí»ové
-Group(da):	Netværks
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(fr):	Réseau
-Group(is):	Net
-Group(it):	Rete
-Group(no):	Nettverks
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
-Group(pt):	Rede
-Group(ru):	óÅÔÅ×ÙÅ
-Group(sl):	Omre¾ni
-Group(sv):	Nätverk
 Requires:	%{name} = %{version}
 Requires:	perl-Authen-Radius
 
@@ -196,20 +112,6 @@ Wtyczka Big Sister do monitorowania serwera radius.
 Summary:	Big Sister plugin for monitoring using SNMP
 Summary(pl):	Wtyczka Big Sister do monitorowania z u¿yciem SNMP
 Group:		Networking
-Group(cs):	Sí»ové
-Group(da):	Netværks
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(fr):	Réseau
-Group(is):	Net
-Group(it):	Rete
-Group(no):	Nettverks
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
-Group(pt):	Rede
-Group(ru):	óÅÔÅ×ÙÅ
-Group(sl):	Omre¾ni
-Group(sv):	Nätverk
 Requires:	%{name} = %{version}
 Requires:	perl-SNMP_Session perl(SNMP_Session) perl(SNMP_util) perl(BER)
 
