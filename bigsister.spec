@@ -154,13 +154,23 @@ rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/init.d
 mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf \
 	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf 
 
-#TODO add patch and e-mail to author
+#TODO 
+# -add patch and e-mail to author
+# -corect directory in /etc/bigsister and /etc/bigsister/adm
+# 
+
 mv -f	$RPM_BUILD_ROOT%{_usr}/share/bigsister/etc/* \
 	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/adm
 cd $RPM_BUILD_ROOT%{_usr}/share/bigsister/
 ln -sf	%{_sysconfdir}/bigsister/adm etc 
 ln -sf	%{_var}/lib/bigsister/www www
 ln -sf	%{_sysconfdir}/bigsister/adm adm
+
+sed -e "s/\$RPM_BUILD_ROOT//g" \
+	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/adm/moduleinfo/files 
+
+sed -e "s/\%{_usr}\/share\/bigsister\/etc/\%{_sysconfdir}\/bigsister\/adm/g" \
+	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/adm/moduleinfo/files 
 
 #TODO correct this file
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
