@@ -68,7 +68,7 @@ case "$1" in
 				;;
 			  *)
 			  	msg_starting "Big Sister uxmon $1"
-				$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /var/lib/bigsister -c /etc/bigsister/uxmon-net" >/dev/null 2>&1
+				$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /usr/share/bigsister -c /etc/bigsister/uxmon-net" >/dev/null 2>&1
 				RETVAL=$?
 				[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 				;;
