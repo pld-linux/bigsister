@@ -16,13 +16,13 @@ URL:		http://bigsister.graeff.com/
 BuildRequires:	rpm-perlprov >= 4.0.2-47
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
-Prereq:		/bin/id
-Prereq:		/sbin/chkconfig
-Prereq:		/usr/bin/getgid
-Prereq:		/usr/sbin/groupadd
-Prereq:		/usr/sbin/groupdel
-Prereq:		/usr/sbin/useradd
-Prereq:		/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Provides:	perl(Monitor::uxmon)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -50,7 +50,8 @@ Wielka Siostra - klon Wielkiego Brata.
 Summary:	Big Sister server
 Summary(pl):	Serwer Big Sister
 Group:		Networking
-Prereq:		%{name} = %{version}
+Requires(post,postun):	%{name} = %{version}
+Requires:	%{name} = %{version}
 
 %description server
 Big Sister server part: display, status collector, alarm generator.
@@ -211,7 +212,9 @@ fi
 
 %postun server
 if [ -f /var/lock/subsys/bigsister ]; then
-	/etc/rc.d/init.d/bigsister stop >&2
+	/etc/rc.d/init.d/bigsister restart >&2
+else
+	echo "Run \"/etc/rc.d/init.d/bigsister start\" to start Big Sister." >&2
 fi
 
 %files
