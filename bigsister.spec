@@ -3,7 +3,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.97p2
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/%{name}/big-sister-%{version}.tar.gz
@@ -158,16 +158,13 @@ mv -f $RPM_BUILD_ROOT%{_libdir}/bs/bin/{bsgraph,bshistory,bsweb*} \
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/bigsister
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/bigsister
 
-gzip -9nf BUGS CHANGES.PLAINTEXT CONFIG HOWTO PROTOCOL Q+A README \
-	SNMP_AGENT TODO UPDATE
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ -n "`/usr/bin/getgid bs`" ]; then
 	if [ "`getgid bs`" != "77" ]; then
-		echo "Warning: group bs haven't gid=77. Correct this before installing bigsister" 1>&2
+		echo "Error: group bs doesn't have gid=77. Correct this before installing bigsister." 1>&2
 		exit 1
 	fi
 else
@@ -175,7 +172,7 @@ else
 fi
 if [ -n "`/bin/id -u bs 2>/dev/null`" ]; then
 	if [ "`/bin/id -u bs`" != "77" ]; then
-		echo "Warning: user bs haven't uid=77. Correct this before installing bigsister" 1>&2
+		echo "Error: user bs doesn't have uid=77. Correct this before installing bigsister." 1>&2
 		exit 1
 	fi
 else
@@ -220,7 +217,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz
+%doc BUGS CHANGES.PLAINTEXT CONFIG HOWTO PROTOCOL Q+A README SNMP_AGENT TODO UPDATE
 %attr(750,root,bs) %dir %{_etcdir}
 %attr(750,root,bs) %dir %{_etcdir}/adm
 %attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/resources
