@@ -1,4 +1,4 @@
-%include /usr/lib/rpm/macros.perl
+%include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
@@ -10,11 +10,11 @@ Source0:	http://dl.sourceforge.net/%{name}/big-sister-%{version}.tar.gz
 # Source0-md5:	44b1dfed1f4ce8029fec2ffe16002c68
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
-Patch0:		%{name}-memory.patch
+Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
+Patch4:		%{name}-not_user_check.patch
 URL:		http://bigsister.graeff.com/
-BuildRequires:	fhs-compliance
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
 BuildRequires:	rpm-perlprov >= 4.0.2-104
@@ -31,13 +31,6 @@ Provides:	user(bs)
 Provides:	perl(Monitor::uxmon)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		_prefix		/usr/lib/bs
-%define		_htmldir	/srv/httpd/html
-%define		_htmlsubdir	%{_htmldir}/bs
-%define		_cgidir		/srv/httpd/cgi-bin
-%define		_vardir		/var/lib/bs
-%define		_etcdir		%{_sysconfdir}/bs
 
 # 'common' and 'parse' are files provided with bigsister
 # perl-GD is optional (for generating maps)
@@ -67,7 +60,7 @@ Czê¶æ serwerowa Big Sister: wy¶wietlaj±ca, zbieraj±ca dane i
 generuj±ca alarmy.
 
 %package ldap
-Summary:	Big Sister plugin for minitoring LDAP
+Summary:	Big Sister plugin for monitoring LDAP
 Summary(pl):	Wtyczka Big Sister do monitorowania LDAP
 Group:		Networking
 Requires:	%{name} = %{version}
@@ -91,7 +84,7 @@ Big Sister plugin for monitoring LDAP using Mozilla::LDAP.
 Wtyczka Big Sister do monitorowania LDAP przy u¿yciu Mozilla::LDAP.
 
 %package oracle
-Summary:	Big Sister plugin for minitoring Oracle
+Summary:	Big Sister plugin for monitoring Oracle
 Summary(pl):	Wtyczka Big Sister do monitorowania Oracle
 Group:		Networking
 Requires:	%{name} = %{version}
@@ -129,53 +122,49 @@ Big Sister plugin for monitoring using SNMP.
 Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 
 %prep
-%setup -q -n bs-0.98c8
-%patch0 -p1
+%setup -q -n bs-%{version}
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
-%configure --with-user=bs \
-	--prefix=/usr/lib/bs \
-	--with-cgi=../cgi-bin
-#%{__make}
-
-#%{__perl} -pi -e 's/^(bin:.*)check/$1/;s/^(install-.*) bin/$1/' Makefile
-#%{__make} bin \
-#	USER=bs \
-#	DEST=%{_libdir}/bs \
-#	CGIPATH=/cgi-bin \
-#	WEBROOT=/bs
+./configure \
+	--with-user=bs \
+	--enable-FHS 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_cgidir},%{_htmldir},%{_etcdir},/etc/sysconfig,%{_vardir}}
-
-#install -d $RPM_BUILD_ROOT{%{_htmldir},%{_cgidir},%{_vardir},%{_etcdir}} \
-#	$RPM_BUILD_ROOT{/etc/rc.d/init.d,/etc/sysconfig}
+install -d $RPM_BUILD_ROOT%{_sysconfdir}{/rc.d/init.d,/sysconfig,/httpd/httpd.conf}
 
 %{__make} install-server install-client install-reporting install-modules install-doc \
 	DESTDIR=$RPM_BUILD_ROOT
-#	USER=`id -nu` \
-#	DEST=$RPM_BUILD_ROOT%{_libdir}/bs \
+#TODO
+# - change path (FHS) in makefile or configure
+#/TODO
+mv -f	$RPM_BUILD_ROOT%{_var}/lib/bigsister/www \
+	$RPM_BUILD_ROOT%{_usr}/share/bigsister/www
+ln -sf	%{_usr}/share/bigsister/www \
+	$RPM_BUILD_ROOT%{_var}/lib/bigsister/www
 
-%define		_prefix		/usr
 
-install -d $RPM_BUILD_ROOT%{_mandir}
-mv -f $RPM_BUILD_ROOT%{_libdir}/bs/www $RPM_BUILD_ROOT%{_htmlsubdir}
-ln -sf %{_htmlsubdir} $RPM_BUILD_ROOT%{_libdir}/bs/www
-rmdir $RPM_BUILD_ROOT%{_libdir}/bs/var
-ln -sf %{_vardir} $RPM_BUILD_ROOT%{_libdir}/bs/var
-mv -f $RPM_BUILD_ROOT%{_libdir}/bs/{etc,adm} $RPM_BUILD_ROOT%{_etcdir}
-ln -sf %{_etcdir}/adm $RPM_BUILD_ROOT%{_libdir}/bs/adm
-ln -sf %{_etcdir}/etc $RPM_BUILD_ROOT%{_libdir}/bs/etc
-#
-mv -f $RPM_BUILD_ROOT%{_libdir}/bs/cgi/{bsgraph,bshistory,bsweb*} \
-	$RPM_BUILD_ROOT%{_cgidir}
-mv -f $RPM_BUILD_ROOT%{_libdir}/bs/man/man1 $RPM_BUILD_ROOT%{_mandir}
+mv -f	$RPM_BUILD_ROOT%{_usr}/share/bigsister/etc \
+	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/adm
+ln -sf	%{_sysconfdir}/bigsister/adm \
+	$RPM_BUILD_ROOT%{_usr}/share/bigsister/etc
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/bigsister
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/bigsister
+mv -f	$RPM_BUILD_ROOT%{_sbindir}/* \
+	$RPM_BUILD_ROOT%{_bindir}
+rm -rf	$RPM_BUILD_ROOT%{_sbindir}
+
+rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/init.d
+
+mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf \
+	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf 
+
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -194,8 +183,8 @@ if [ -n "`/bin/id -u bs 2>/dev/null`" ]; then
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -u 77 -d /var/lib/bs -s /bin/false \
-		-c "Big Sister" -g bs bs 1>&2
+	/usr/sbin/useradd -u 77 -d %{_usr}/share/bigsister/www \
+	-s /bin/false -c "Big Sister" -g bs bs 1>&2
 fi
 
 %post
@@ -236,158 +225,154 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc BUGS CHANGES.PLAINTEXT CONFIG HOWTO PROTOCOL Q+A README SNMP_AGENT TODO UPDATE
+%dir %{_usr}/share/doc/bigsister
+%doc %{_usr}/share/doc/bigsister/*
+%{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf
+%{_sysconfdir}/cron.weekly/bigsister_logs
+%attr(750,root,bs) %{_sysconfdir}/rc.d/init.d/bigsister
 %{_mandir}/man*/*
-%attr(750,root,bs) %dir %{_etcdir}
-%attr(750,root,bs) %dir %{_etcdir}/adm
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/resources
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/uxmon-net
-%attr(750,root,bs) %dir %{_etcdir}/etc
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/OV
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/resources
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/syslog
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/eventlog
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/tests.cfg
-%attr(754,root,root) /etc/rc.d/init.d/bigsister
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/bigsister
-%attr(771,root,bs) %{_vardir}
-%dir %{_libdir}/bs
-%{_libdir}/bs/adm
-%dir %{_libdir}/bs/bin
-%{_libdir}/bs/bin/BS_unix.pm
-%{_libdir}/bs/bin/BigSister/common.pm
-%{_libdir}/bs/bin/[CHPRSTcp]*.pm
-%{_libdir}/bs/bin/Monitor/*.pm
-%{_libdir}/bs/bin/MicroTime.pm
-%{_libdir}/bs/bin/Reader/*pm
-%attr(755,root,root) %{_libdir}/bs/bin/bb_start
-%attr(755,root,root) %{_libdir}/bs/bin/bsmodule
-%attr(755,root,root) %{_libdir}/bs/bin/report*
-%attr(755,root,root) %{_libdir}/bs/bin/smtpmail
-%attr(755,root,root) %{_libdir}/bs/bin/testers
-%{_libdir}/bs/bin/snmp.pm
-%attr(755,root,root) %{_libdir}/bs/bin/bbecho
-%attr(775,root,bs) %{_libdir}/bs/bin/bsadmin
-%{_libdir}/bs/etc
-%dir %{_libdir}/bs/uxmon
-%dir %{_libdir}/bs/uxmon/Config
-%{_libdir}/bs/uxmon/Config/_perflib
-%{_libdir}/bs/uxmon/Config/noFQDN
-%{_libdir}/bs/uxmon/Config/[FObdfimpty]*
-%{_libdir}/bs/uxmon/Config/_[ert]*
-%{_libdir}/bs/uxmon/Config/c[op]*
-%{_libdir}/bs/uxmon/Config/http
-%{_libdir}/bs/uxmon/Config/lo*
-%{_libdir}/bs/uxmon/Config/n[Fefln]*
-%{_libdir}/bs/uxmon/Config/ntp
-%{_libdir}/bs/uxmon/Config/r[ep]*
-%{_libdir}/bs/uxmon/Config/s[mty]*
-%dir %{_libdir}/bs/uxmon/Monitor
-%{_libdir}/bs/uxmon/Monitor/PerfLib.pm
-%{_libdir}/bs/uxmon/Monitor/eventlog.pm
-%{_libdir}/bs/uxmon/Monitor/[EMOTb-dfmpt-u]*
-%{_libdir}/bs/uxmon/Monitor/l[ox]*
-%{_libdir}/bs/uxmon/Monitor/r[ep]*
-%{_libdir}/bs/uxmon/Monitor/s[aty]*
-%dir %{_libdir}/bs/uxmon/Requester
-%{_libdir}/bs/uxmon/Requester/Requester.pm
-%{_libdir}/bs/uxmon/Requester/[A-Za-rt-z]*
-%{_libdir}/bs/uxmon/Requester/s[oy]*
-%attr(755,root,root) %{_libdir}/bs/uxmon/uxmon
-%{_libdir}/bs/uxmon/uxmon-rules.pl
-%{_libdir}/bs/var
-%{_libdir}/bs/www
-
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/resources
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/uxmon-net
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/OV
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/syslog
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/eventlog
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/tests.cfg
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/sysconfig/bigsister
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/resources
+%dir %{_usr}/share/bigsister/bin
+%{_usr}/share/bigsister/bin/BS_unix.pm
+%{_usr}/share/bigsister/bin/BigSister/common.pm
+%{_usr}/share/bigsister/bin/[CHPRSTcp]*.pm
+%{_usr}/share/bigsister/bin/Monitor/*.pm
+%{_usr}/share/bigsister/bin/MicroTime.pm
+%{_usr}/share/bigsister/bin/Reader/*pm
+%{_usr}/share/bigsister/bin/BS_win32.pm
+%attr(755,root,root) %{_usr}/share/bigsister/bin/bb_start
+%attr(755,root,root) %{_usr}/share/bigsister/bin/bb_start32
+%attr(755,root,root) %{_usr}/share/bigsister/bin/bb_stop32
+%attr(755,root,root) %{_bindir}/bsmodule
+%attr(755,root,root) %{_usr}/share/bigsister/bin/report*
+%attr(755,root,root) %{_usr}/share/bigsister/bin/smtpmail
+%attr(755,root,root) %{_usr}/share/bigsister/bin/testers
+%{_usr}/share/bigsister/bin/snmp.pm
+%attr(755,root,root) %{_usr}/share/bigsister/bin/bbecho
+%attr(775,root,bs) %{_bindir}/bsadmin
+%dir %{_usr}/share/bigsister/uxmon
+%dir %{_usr}/share/bigsister/uxmon/Config
+%{_usr}/share/bigsister/uxmon/Config/_perflib
+%{_usr}/share/bigsister/uxmon/Config/noFQDN
+%{_usr}/share/bigsister/uxmon/Config/[FObdfimpty]*
+%{_usr}/share/bigsister/uxmon/Config/_[ert]*
+%{_usr}/share/bigsister/uxmon/Config/c[op]*
+%{_usr}/share/bigsister/uxmon/Config/http
+%{_usr}/share/bigsister/uxmon/Config/lo*
+%{_usr}/share/bigsister/uxmon/Config/n[Fefln]*
+%{_usr}/share/bigsister/uxmon/Config/ntp
+%{_usr}/share/bigsister/uxmon/Config/r[ep]*
+%{_usr}/share/bigsister/uxmon/Config/s[mty]*
+%dir %{_usr}/share/bigsister/uxmon/Monitor
+%{_usr}/share/bigsister/uxmon/Monitor/PerfLib.pm
+%{_usr}/share/bigsister/uxmon/Monitor/eventlog.pm
+%{_usr}/share/bigsister/uxmon/Monitor/[EMOTb-dfmpt-u]*
+%{_usr}/share/bigsister/uxmon/Monitor/l[ox]*
+%{_usr}/share/bigsister/uxmon/Monitor/r[ep]*
+%{_usr}/share/bigsister/uxmon/Monitor/s[aty]*
+%dir %{_usr}/share/bigsister/uxmon/Requester
+%{_usr}/share/bigsister/uxmon/Requester/[A-Za-rt-z]*
+%{_usr}/share/bigsister/uxmon/Requester/s[oy]*
+%attr(755,root,root) %{_usr}/share/bigsister/uxmon/uxmon
+%{_usr}/share/bigsister/uxmon/uxmon-rules.pl
+%{_usr}/share/bigsister/www
 
 %files server
 %defattr(644,root,root,755)
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bb-display.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bb_event_generator.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bsmon_site.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/notify.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/permissions
-%attr(750,root,bs) %dir %{_etcdir}/adm/reporting
-%{_etcdir}/adm/reporting/*
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/bsmon.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/graphtemplates
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/keys
-%attr(750,root,bs) %dir %{_etcdir}/etc/graphdef
-%{_etcdir}/etc/graphdef/*
-%attr(750,root,bs) %dir %{_etcdir}/etc/moduleinfo
-%{_etcdir}/etc/moduleinfo/*
-%attr(750,root,bs) %dir %{_etcdir}/etc/testdef
-%{_etcdir}/etc/testdef/*
-%attr(755,root,root) %{_cgidir}/bs*
-%attr(775,root,bs) %dir %{_htmlsubdir}
-%attr(775,root,bs) %dir %{_htmlsubdir}/html
-%attr(775,root,bs) %dir %{_htmlsubdir}/logs
-%attr(775,root,bs) %dir %{_htmlsubdir}/logs/history
-%attr(775,root,bs) %dir %{_htmlsubdir}/help
-%attr(775,root,bs) %dir %{_htmlsubdir}/help/images
-%{_htmlsubdir}/skins
-%{_htmlsubdir}/help/*.html
-%{_htmlsubdir}/help/*.jpg
-%{_htmlsubdir}/help/images/*png
-%dir %{_libdir}/bs/bin/Statusmon
-%{_libdir}/bs/bin/Statusmon/[BDGHRSTght]*.pm
-%{_libdir}/bs/bin/Statusmon/bs_evgen.pm
-%{_libdir}/bs/bin/access.pm
-%{_libdir}/bs/bin/bbdisp.pm
-%{_libdir}/bs/bin/bscgi.pm
-%{_libdir}/bs/bin/display_map.pm
-%attr(755,root,root) %{_libdir}/bs/bin/bbd
-%attr(755,root,root) %{_libdir}/bs/bin/bsmon
-%attr(755,root,root) %{_libdir}/bs/bin/log_mail
-%attr(755,root,root) %{_libdir}/bs/bin/notify
-%attr(755,root,root) %{_libdir}/bs/bin/compile_skin
-%attr(755,root,root) %{_libdir}/bs/bin/page_meridian
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bb-display.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bb_event_generator.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bsmon_site.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/notify.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/permissions
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/reporting
+%{_sysconfdir}/bigsister/reporting/*
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/bsmon.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/graphtemplates
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/adm/keys
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/adm/graphdef
+%{_sysconfdir}/bigsister/adm/graphdef/*
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/adm/moduleinfo
+%{_sysconfdir}/bigsister/adm/moduleinfo/*
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/adm/testdef
+%{_sysconfdir}/bigsister/adm/testdef/*
+%attr(755,root,root) %{_usr}/share/bigsister/cgi/bs*
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/www/html
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/www/logs
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/www/logs/history
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/www/help
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/www/help/images
+%{_usr}/share/bigsister/www/skins
+%{_usr}/share/bigsister/www/help/*.html
+%{_usr}/share/bigsister/www/help/*.jpg
+%{_usr}/share/bigsister/www/help/images/*png
+%dir %{_usr}/share/bigsister/bin/Statusmon
+%{_usr}/share/bigsister/bin/Statusmon/[BDGHRSTght]*.pm
+%{_usr}/share/bigsister/bin/Statusmon/bs_evgen.pm
+%{_usr}/share/bigsister/bin/access.pm
+%{_usr}/share/bigsister/bin/bbdisp.pm
+%{_usr}/share/bigsister/bin/bscgi.pm
+%{_usr}/share/bigsister/bin/display_map.pm
+%attr(755,root,root) %{_usr}/share/bigsister/bin/bbd
+%attr(755,root,root) %{_usr}/share/bigsister/bin/bsmon
+%attr(755,root,root) %{_usr}/share/bigsister/bin/log_mail
+%attr(755,root,root) %{_usr}/share/bigsister/bin/notify
+%attr(755,root,root) %{_usr}/share/bigsister/bin/compile_skin
+%attr(755,root,root) %{_usr}/share/bigsister/bin/page_meridian
 
 %files ldap
 %defattr(644,root,root,755)
-%{_libdir}/bs/uxmon/Config/ldap
-%{_libdir}/bs/uxmon/Monitor/ldap.pm
+%{_usr}/share/bigsister/uxmon/Config/ldap
+%{_usr}/share/bigsister/uxmon/Monitor/ldap.pm
 
 %files ldap_mozilla
 %defattr(644,root,root,755)
-%{_libdir}/bs/uxmon/Config/ldap_mozilla
-%{_libdir}/bs/uxmon/Monitor/ldap_mozilla.pm
+%{_usr}/share/bigsister/uxmon/Config/ldap_mozilla
+%{_usr}/share/bigsister/uxmon/Monitor/ldap_mozilla.pm
 
 %files oracle
 %defattr(644,root,root,755)
-%{_libdir}/bs/uxmon/Config/oracle
-%{_libdir}/bs/uxmon/Monitor/oracle.pm
+%{_usr}/share/bigsister/uxmon/Config/oracle
+%{_usr}/share/bigsister/uxmon/Monitor/oracle.pm
 
 %files radius
 %defattr(644,root,root,755)
-%{_libdir}/bs/uxmon/Config/radius
-%{_libdir}/bs/uxmon/Monitor/radius.pm
+%{_usr}/share/bigsister/uxmon/Config/radius
+%{_usr}/share/bigsister/uxmon/Monitor/radius.pm
 
 %files snmp
 %defattr(644,root,root,755)
-%{_etcdir}/etc/mibs.txt
-%{_etcdir}/etc/perf*
-%{_etcdir}/etc/snmp_trap
-%attr(755,root,root) %{_libdir}/bs/bin/bstrapd
-%{_libdir}/bs/bin/snmp.pm
-%{_libdir}/bs/uxmon/Config/_snmp
-%{_libdir}/bs/uxmon/Config/_storage
-%{_libdir}/bs/uxmon/Config/atmport
-%{_libdir}/bs/uxmon/Config/caty
-%{_libdir}/bs/uxmon/Config/etherport
-%{_libdir}/bs/uxmon/Config/hub
-%{_libdir}/bs/uxmon/Config/novell
-%{_libdir}/bs/uxmon/Config/nt
-%{_libdir}/bs/uxmon/Config/snmp
-%{_libdir}/bs/uxmon/Config/snmp_trap
-%{_libdir}/bs/uxmon/Config/snmpvar
-%{_libdir}/bs/uxmon/Config/software
-%{_libdir}/bs/uxmon/Config/ups
-%{_libdir}/bs/uxmon/Config/qmqueue
-%{_libdir}/bs/uxmon/Config/sendmail
-%{_libdir}/bs/uxmon/Monitor/atmport.pm
-%{_libdir}/bs/uxmon/Monitor/etherport.pm
-%{_libdir}/bs/uxmon/Monitor/snmp.pm
-%{_libdir}/bs/uxmon/Monitor/qmqueue.pm
-%{_libdir}/bs/uxmon/Monitor/sendmail.pm
-%{_libdir}/bs/uxmon/Monitor/snmp_trap.pm
-%{_libdir}/bs/uxmon/Requester/snmp.pm
+%{_sysconfdir}/bigsister/adm/mibs.txt
+%{_sysconfdir}/bigsister/adm/perf*
+%{_sysconfdir}/bigsister/adm/snmp_trap
+%attr(755,root,root) %{_usr}/share/bigsister/bin/bstrapd
+%{_usr}/share/bigsister/bin/snmp.pm
+%{_usr}/share/bigsister/uxmon/Config/_snmp
+%{_usr}/share/bigsister/uxmon/Config/_storage
+%{_usr}/share/bigsister/uxmon/Config/atmport
+%{_usr}/share/bigsister/uxmon/Config/caty
+%{_usr}/share/bigsister/uxmon/Config/etherport
+%{_usr}/share/bigsister/uxmon/Config/hub
+%{_usr}/share/bigsister/uxmon/Config/novell
+%{_usr}/share/bigsister/uxmon/Config/nt
+%{_usr}/share/bigsister/uxmon/Config/snmp
+%{_usr}/share/bigsister/uxmon/Config/snmp_trap
+%{_usr}/share/bigsister/uxmon/Config/snmpvar
+%{_usr}/share/bigsister/uxmon/Config/software
+%{_usr}/share/bigsister/uxmon/Config/ups
+%{_usr}/share/bigsister/uxmon/Config/qmqueue
+%{_usr}/share/bigsister/uxmon/Config/sendmail
+%{_usr}/share/bigsister/uxmon/Monitor/atmport.pm
+%{_usr}/share/bigsister/uxmon/Monitor/etherport.pm
+%{_usr}/share/bigsister/uxmon/Monitor/snmp.pm
+%{_usr}/share/bigsister/uxmon/Monitor/qmqueue.pm
+%{_usr}/share/bigsister/uxmon/Monitor/sendmail.pm
+%{_usr}/share/bigsister/uxmon/Monitor/snmp_trap.pm
+%{_usr}/share/bigsister/uxmon/Requester/snmp.pm
