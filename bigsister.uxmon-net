@@ -1,0 +1,49 @@
+# Agent Configuration File
+# The Big Sister Server expects communication
+# every 10 minutes or server is considered down
+#-----------------------------------------------------
+# Set the default SNMP community to "public", the
+#
+# Set default frequency to 5 minutes for "ALL" checks
+# KEYWORD       Default settings                        Apply To TEST
+#-------------  ---------------------------             -----------------
+DEFAULT		community=public frequency=5 perf=5	ALL
+DEFAULT		version=1 proto=udp			rpc
+DEFAULT		proto=icmp				ping
+
+
+# Information about defined systems to monitor using DESCR command.
+#
+# KEYWORD       SYSTEM FEATURES                         Apply To HOST
+#---------      --------------------------              ------------
+DESCR		features=unix,linux,PLD			localhost
+# DESCR		features=unix,sysv,solaris		someotherhost
+
+
+# Run the following tests.
+# Note: host1(host2) is reported under host2
+# Note: host can be an IP address
+# Report Host   Health Test List
+#------------   -----------------------------------
+localhost memory network disk syslog ntp users
+localhost proc=inetd 			procs
+localhost proc=sshd 			procs
+#localhost fs=.7(6-10),.0(30-40),/dev/rdsk/c0t1d0s0.7(1-2)  ]dumpdates
+localhost idle=10 wio=50 freeswap_red=100000 freeswap_yellow=200000 load
+localhost yellow=3 red=8  		diskload
+localhost 				rpc
+localhost proto=udp 			ping
+localhost url=http://localhost 		http
+localhost cpu_yellow=10 cpu_red=20 	cpuload
+
+
+# EDIT THIS, replace localhost by the name or IP address of your Big Sister server
+#
+# BigSis Server bsdisplay /options
+#------------   -----------------------------------
+localhost	bsdisplay
+
+# include file for specific hosts, do not name it uxmon-net.* as a new 
+# process is started for every file matching that pattern
+
+include include.$HOST
