@@ -48,7 +48,7 @@ case "$1" in
 			uxmonprefix="su - bs -s /bin/sh"
 		fi
 		umask 022
-	  	if [ -f /usr/share/bigsister/bin/bsmon -a -f  /usr/share/bigsister/etc/bsmon.cfg ]; then
+	  	if [ -f /usr/share/bigsister/bin/bsmon -a -f /etc/bigsister/adm/bsmon.cfg ]; then
 			msg_starting "Big Sister bsmon"
 			$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/bin/bsmon" > /dev/null 2>&1
 			RETVAL=$?
@@ -68,13 +68,13 @@ case "$1" in
 				;;
 			  *)
 			  	msg_starting "Big Sister uxmon $1"
-				$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /var/lib/bigsister -c $1" >/dev/null 2>&1
+				$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /var/lib/bigsister -c /etc/bigsister/uxmon-net" >/dev/null 2>&1
 				RETVAL=$?
 				[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 				;;
 			esac
 		done
-		if [ -f /usr/share/bigsister/etc/bstrapd.cfg ]; then
+		if [ -f /etc/bigsister/adm/bstrapd.cfg ]; then
 			# bstrapd will only run as root
 			msg_starting "Big Sister bstrapd"
 			/usr/bin/setsid /usr/share/bigsister/bin/bstrapd >/dev/null 2>&1
