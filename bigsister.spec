@@ -7,6 +7,7 @@ Release:	4
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/%{name}/big-sister-%{version}.tar.gz
+# Source0-md5:	dd8d0822b7e7089aa4c3e25a90cedb04
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-memory.patch
