@@ -1,5 +1,6 @@
 #TODO
 # - corect path for files and directory in /etc/bigsister/etc/* - Patch5 (FHS)
+# - security for webpage and admin page
 #/TODO
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
