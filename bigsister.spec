@@ -22,6 +22,7 @@ BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
 BuildRequires:	rpm-perlprov >= 4.0.2-104
 BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	sed >= 4.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
