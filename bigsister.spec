@@ -17,12 +17,12 @@ URL:		http://bigsister.graeff.com/
 BuildRequires:	rpm-perlprov >= 4.0.2-47
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
-Requires(pre): /bin/id
-Requires(pre): /usr/bin/getgid
-Requires(pre): /usr/sbin/groupadd
-Requires(pre): /usr/sbin/useradd
-Requires(postun):      /usr/sbin/groupdel
-Requires(postun):      /usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
 Provides:	perl(Monitor::uxmon)
 BuildArch:	noarch
@@ -166,20 +166,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ -n "`/usr/bin/getgid bs`" ]; then
-       if [ "`getgid bs`" != "77" ]; then
-               echo "Error: group bs doesn't have gid=77. Correct this before installing bigsister." 1>&2
-               exit 1
-       fi
+	if [ "`getgid bs`" != "77" ]; then
+		echo "Error: group bs doesn't have gid=77. Correct this before installing bigsister." 1>&2
+		exit 1
+	fi
 else
-       /usr/sbin/groupadd -g 77 -r -f bs
+	/usr/sbin/groupadd -g 77 -r -f bs
 fi
 if [ -n "`/bin/id -u bs 2>/dev/null`" ]; then
-       if [ "`/bin/id -u bs`" != "77" ]; then
-               echo "Error: user bs doesn't have uid=77. Correct this before installing bigsister." 1>&2
-               exit 1
-       fi
+	if [ "`/bin/id -u bs`" != "77" ]; then
+		echo "Error: user bs doesn't have uid=77. Correct this before installing bigsister." 1>&2
+		exit 1
+	fi
 else
-       /usr/sbin/useradd -u 77 -r -d /var/lib/bs -s /bin/false -c "Big Sister" -g bs bs 1>&2
+	/usr/sbin/useradd -u 77 -r -d /var/lib/bs -s /bin/false -c "Big Sister" -g bs bs 1>&2
 fi
 
 %post
@@ -200,8 +200,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-       /usr/sbin/userdel bs 2> /dev/null
-       /usr/sbin/groupdel bs 2> /dev/null
+	/usr/sbin/userdel bs 2> /dev/null
+	/usr/sbin/groupdel bs 2> /dev/null
 fi
 
 %post server
