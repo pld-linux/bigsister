@@ -1,7 +1,6 @@
 #TODO
 # - package bigsister --> bigsister-agent
 #/TODO
-
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
@@ -157,7 +156,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ -n "`/usr/bin/getgid bs`" ]; then
