@@ -1,0 +1,28 @@
+diff -urN bs-0.98c8/Makefile.in bs-0.98c8/Makefile.in
+--- bs-0.98c8/Makefile.in	2003-10-16 17:10:59.000000000 +0200
++++ bs-0.98c8/Makefile.in	2005-02-28 01:23:07.940984456 +0100
+@@ -218,15 +218,15 @@
+ 	
+ # GNU id exits nonzero on success.  sigh.
+ check:
+-	@test `id ${USER} 2>/dev/null | wc -l` = 1 || { \
+-	     echo "" >&2; \
+-	     echo "user ${USER} does not exist on this system" >&2; \
+-	     echo "please use 'make install USER=login if" >&2; \
+-	     echo "you'd like to run Big Sister as another user" >&2; \
+-	     echo "called login rather than ${USER}" >&2; \
+-	     echo "" >&2; \
+-	     exit 2; \
+-	}
++#	@test `id ${USER} 2>/dev/null | wc -l` = 1 || { \
++#	     echo "" >&2; \
++#	     echo "user ${USER} does not exist on this system" >&2; \
++#	     echo "please use 'make install USER=login if" >&2; \
++#	     echo "you'd like to run Big Sister as another user" >&2; \
++#	     echo "called login rather than ${USER}" >&2; \
++#	     echo "" >&2; \
++#	     exit 2; \
++#	}
+ 	@[ -d ${DESTDIR}${WEB_DIR}/gifs ] && { \
+ 	     echo "" >&2; \
+ 	     echo "***************************" >&2; \
