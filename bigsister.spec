@@ -10,7 +10,7 @@ Release:	0.1
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
-# Source0-md5:	ef4bc0ccb9a8f91e13f40eaa198a37ca	
+# Source0-md5:	ef4bc0ccb9a8f91e13f40eaa198a37ca
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch1:		%{name}-memory.patch
@@ -215,10 +215,11 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/bs*
 %dir %{_usr}/share/doc/bigsister
 %doc %{_usr}/share/doc/bigsister/*
 %{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf
-%{_sysconfdir}/cron.weekly/bigsister_logs
+%attr(755,root,root) %{_sysconfdir}/cron.weekly/bigsister_logs
 %attr(750,root,bs) %{_sysconfdir}/rc.d/init.d/bigsister
 %{_mandir}/man*/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister
@@ -230,7 +231,10 @@ fi
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/tests.cfg
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/sysconfig/bigsister
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/resources
-%dir %{_usr}/share/bigsister/bin
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/Monitor
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/Reader
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/BigSister
 %{_usr}/share/bigsister/bin/BS_unix.pm
 %{_usr}/share/bigsister/bin/BigSister/common.pm
 %{_usr}/share/bigsister/bin/[CHPRSTcp]*.pm
@@ -238,16 +242,15 @@ fi
 %{_usr}/share/bigsister/bin/MicroTime.pm
 %{_usr}/share/bigsister/bin/Reader/*pm
 %{_usr}/share/bigsister/bin/BS_win32.pm
+%{_usr}/share/bigsister/bin/snmp.pm
 %attr(755,root,root) %{_usr}/share/bigsister/bin/bb_start
 %attr(755,root,root) %{_usr}/share/bigsister/bin/bb_start32
 %attr(755,root,root) %{_usr}/share/bigsister/bin/bb_stop32
-%attr(755,root,root) %{_bindir}/bsmodule
 %attr(755,root,root) %{_usr}/share/bigsister/bin/report*
 %attr(755,root,root) %{_usr}/share/bigsister/bin/smtpmail
 %attr(755,root,root) %{_usr}/share/bigsister/bin/testers
-%{_usr}/share/bigsister/bin/snmp.pm
 %attr(755,root,root) %{_usr}/share/bigsister/bin/bbecho
-%attr(775,root,bs) %{_bindir}/bsadmin
+%dir %{_usr}/share/bigsister
 %dir %{_usr}/share/bigsister/uxmon
 %dir %{_usr}/share/bigsister/uxmon/Config
 %{_usr}/share/bigsister/uxmon/Config/_perflib
@@ -276,6 +279,7 @@ fi
 
 %files server
 %defattr(644,root,root,755)
+%dir %{_sysconfdir}/bigsister/
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bb-display.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bb_event_generator.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bsmon_site.cfg
@@ -283,6 +287,7 @@ fi
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/permissions
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/reporting
 %{_sysconfdir}/bigsister/reporting/*
+%attr(770,root,bs) %dir %{_usr}/share/bigsister/etc
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/bsmon.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/graphtemplates
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/keys
@@ -292,17 +297,47 @@ fi
 %{_usr}/share/bigsister/etc/moduleinfo/*
 %attr(750,root,bs) %dir %{_usr}/share/bigsister/etc/testdef
 %{_usr}/share/bigsister/etc/testdef/*
+%attr(755,root,root) %dir %{_usr}/share/bigsister/cgi
 %attr(755,root,root) %{_usr}/share/bigsister/cgi/bs*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/html
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/logs
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/logs/history
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/help
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/help/images
-%{_var}/lib/bigsister/www/skins
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/techie
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/techie/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/title_in_table
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/title_in_table/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/twocolumn
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/twocolumn/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/webadmin
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/webadmin/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/white_bg
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/white_bg/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/default
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/default/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/static_lamps
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/static_lamps/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/structured_bg
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/structured_bg/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/alt_contentsicons
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/alt_contentsicons/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/bigbro13
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/bigbro13/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/bsdoc
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/bsdoc/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/compactmenu
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/compactmenu/*
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/frames
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/frames/*
 %{_var}/lib/bigsister/www/help/*.html
 %{_var}/lib/bigsister/www/help/*.jpg
 %{_var}/lib/bigsister/www/help/images/*png
-%dir %{_usr}/share/bigsister/bin/Statusmon
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin
+%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/Statusmon
 %{_usr}/share/bigsister/bin/Statusmon/[BDGHRSTght]*.pm
 %{_usr}/share/bigsister/bin/Statusmon/bs_evgen.pm
 %{_usr}/share/bigsister/bin/access.pm
