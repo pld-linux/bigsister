@@ -219,8 +219,8 @@ fi
 %dir %{_usr}/share/doc/bigsister
 %doc %{_usr}/share/doc/bigsister/*
 %{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf
-%attr(755,root,root) %{_sysconfdir}/cron.weekly/bigsister_logs
-%attr(750,root,bs) %{_sysconfdir}/rc.d/init.d/bigsister
+%attr(755,root,root) /etc/cron.weekly/bigsister_logs
+%attr(754,root,bs) /etc/rc.d/init.d/bigsister
 %{_mandir}/man*/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister
 %attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/resources
