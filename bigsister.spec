@@ -19,7 +19,7 @@ Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
 Patch4:		%{name}-not_user_check.patch
-Patch5:		%{name}-path_to_adm.patch
+#Patch5:		%{name}-path_to_adm.patch
 URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
@@ -179,6 +179,7 @@ mv -f	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc \
 rm -rf	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc
 cd $RPM_BUILD_ROOT%{_datadir}/bigsister
 ln -sf	%{_var}/lib/bigsister/www www
+ln -sf	%{_var}/lib/bigsister var
 ln -sf	%{_sysconfdir}/bigsister/etc etc
 
 #correct path in files
@@ -293,6 +294,7 @@ fi
 %attr(640,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/uxmon-net
 %dir %{_datadir}/bigsister
 %{_datadir}/bigsister/etc
+%{_datadir}/bigsister/var
 %dir %{_datadir}/bigsister/bin
 %dir %{_datadir}/bigsister/bin/Monitor
 %dir %{_datadir}/bigsister/bin/Reader
