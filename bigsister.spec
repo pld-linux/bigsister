@@ -14,6 +14,7 @@ Patch0:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
 URL:		http://bigsister.graeff.com/
+BuildRequires:	fhs-compliance
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
 BuildRequires:	rpm-perlprov >= 4.0.2-104
