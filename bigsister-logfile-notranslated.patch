@@ -1,0 +1,10 @@
+--- bs-0.97/uxmon/Monitor/logfile.pm.orig	Tue Jun 19 17:31:35 2001
++++ bs-0.97/uxmon/Monitor/logfile.pm	Thu Jan 24 12:18:52 2002
+@@ -288,6 +288,7 @@
+ 	&uxmon::set_time($self->{"logtime"});
+     }
+     foreach $host (keys %$hosts) {
++	next if ($self->{"translations"}->{$host});
+ 	my $key;
+ 	my $stati = $self->{"stati"}->{$host};
+ 	my $reports = 0;

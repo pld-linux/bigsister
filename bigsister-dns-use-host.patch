@@ -1,0 +1,9 @@
+--- bs-0.97/uxmon/Config/dns.orig	Thu Jul 13 20:14:08 2000
++++ bs-0.97/uxmon/Config/dns	Tue Jan 22 15:31:28 2002
+@@ -8,5 +8,5 @@
+     $cmd->sched_frequency( $args{"frequency"} );
+ }
+ 
+-$cmd->add_check( $args{"alias"}.".dns", "nslookup -retry=2 -timeout=4 $args{host} $args{host}", 
++$cmd->add_check( $args{"alias"}.".dns", "host -R 2 -W 4 $args{host} $args{host}", 
+ 		 [ 0, "green", "dns OK" ], [ "timeout", "red", "dns TIMEOUT" ], [ "*", "red", "dns FAILURE" ] );

@@ -1,0 +1,10 @@
+--- bs-0.97/uxmon/Config/memory.orig	Wed Nov 22 21:34:15 2000
++++ bs-0.97/uxmon/Config/memory	Tue Jan 22 14:25:08 2002
+@@ -61,7 +61,6 @@
+     $args{"_evaluator"}->add_check( ($args{"check"}?$args{"check"}:"cpu"), sub {
+ 	my( $vars ) = @_;
+ 
+-	my $val = &$val($vars);
+ 	return( 2, "(no data available)" ) unless( defined $val );
+ 	$val = int($val+0.5);
+ 	if( $val > $limit ) {

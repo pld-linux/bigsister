@@ -1,0 +1,8 @@
+# Customized settings for Big Sister
+
+# run uxmon as root (needed for e.g. ping type=icmp)
+UXMON_ASROOT="no"
+
+# bbd additional arguments
+# [-D level] [-p port] [-i interval] [-c] [-f cfgfile]
+#BBD_ARGS=""
