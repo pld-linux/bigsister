@@ -15,6 +15,8 @@ Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
 # Source0-md5:	ef4bc0ccb9a8f91e13f40eaa198a37ca
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
+Source3:	%{name}.bsmon.cfg
+Source4:	%{name}.uxmon-net
 Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
@@ -198,6 +200,12 @@ mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new \
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+# basic config file
+rm -f $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
+rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
