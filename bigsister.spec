@@ -1,6 +1,7 @@
 #TODO
 # - corect path for files and directory in /etc/bigsister/etc/* - Patch5 (FHS)
 # - security for webpage and admin page
+# - subpackages for skins??????
 #/TODO
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
@@ -365,19 +366,46 @@ fi
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/help
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/help/images
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/techie
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/title_in_table
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/twocolumn
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/webadmin
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/white_bg
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/default
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/static_lamps
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/structured_bg
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/alt_contentsicons
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/bigbro13
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/bsdoc
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/compactmenu
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/frames
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/techie
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/techie/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/title_in_table
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/title_in_table*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/twocolumn
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/twocolumn/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/webadmin
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/webadmin/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/white_bg
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/white_bg/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/default
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/default/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/static_lamps
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/static_lamps/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/structured_bg
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/structured_bg/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/alt_contentsicons
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/alt_contentsicons/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/bigbro13
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/bigbro13/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/bsdoc
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/bsdoc/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/compactmenu
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/compactmenu/*
+
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/frames
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/frames/*
+
 %{_var}/lib/bigsister/www/help/*.html
 %{_var}/lib/bigsister/www/help/*.jpg
 %{_var}/lib/bigsister/www/help/images/*png
