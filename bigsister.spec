@@ -138,7 +138,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}{/rc.d/init.d,/sysconfig,/httpd/httpd.conf}
+install -d $RPM_BUILD_ROOT/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf}
 
 %{__make} install-server install-client install-reporting install-modules install-doc \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -152,8 +152,8 @@ rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/init.d
 mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf \
 	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf 
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -220,21 +220,22 @@ fi
 %doc %{_usr}/share/doc/bigsister/*
 %{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf
 %attr(755,root,root) /etc/cron.weekly/bigsister_logs
-%attr(754,root,bs) /etc/rc.d/init.d/bigsister
+%attr(754,root,root) /etc/rc.d/init.d/bigsister
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bigsister
 %{_mandir}/man*/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/resources
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/uxmon-net
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/OV
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/syslog
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/eventlog
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/tests.cfg
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/sysconfig/bigsister
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/resources
-%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin
-%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/Monitor
-%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/Reader
-%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/BigSister
+# XXX: /usr is not writable at runtime!
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/resources
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/OV
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/syslog
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/eventlog
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/tests.cfg
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/resources
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/uxmon-net
+%dir %{_usr}/share/bigsister/bin
+%dir %{_usr}/share/bigsister/bin/Monitor
+%dir %{_usr}/share/bigsister/bin/Reader
+%dir %{_usr}/share/bigsister/bin/BigSister
 %{_usr}/share/bigsister/bin/BS_unix.pm
 %{_usr}/share/bigsister/bin/BigSister/common.pm
 %{_usr}/share/bigsister/bin/[CHPRSTcp]*.pm
@@ -279,18 +280,19 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%dir %{_sysconfdir}/bigsister/
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bb-display.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bb_event_generator.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/bsmon_site.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/notify.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/bigsister/permissions
+%dir %{_sysconfdir}/bigsister
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/bb-display.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/bb_event_generator.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/bsmon_site.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/notify.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/permissions
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/reporting
 %{_sysconfdir}/bigsister/reporting/*
-%attr(770,root,bs) %dir %{_usr}/share/bigsister/etc
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/bsmon.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/graphtemplates
-%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_usr}/share/bigsister/etc/keys
+%attr(750,root,bs) %dir %{_usr}/share/bigsister/etc
+# XXX: /usr is not writable at runtime!
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/bsmon.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/graphtemplates
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/keys
 %attr(750,root,bs) %dir %{_usr}/share/bigsister/etc/graphdef
 %{_usr}/share/bigsister/etc/graphdef/*
 %attr(750,root,bs) %dir %{_usr}/share/bigsister/etc/moduleinfo
@@ -336,8 +338,8 @@ fi
 %{_var}/lib/bigsister/www/help/*.html
 %{_var}/lib/bigsister/www/help/*.jpg
 %{_var}/lib/bigsister/www/help/images/*png
-%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin
-%attr(775,root,bs) %dir %{_usr}/share/bigsister/bin/Statusmon
+%dir %{_usr}/share/bigsister/bin
+%dir %{_usr}/share/bigsister/bin/Statusmon
 %{_usr}/share/bigsister/bin/Statusmon/[BDGHRSTght]*.pm
 %{_usr}/share/bigsister/bin/Statusmon/bs_evgen.pm
 %{_usr}/share/bigsister/bin/access.pm
