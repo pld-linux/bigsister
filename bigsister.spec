@@ -17,6 +17,7 @@ Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
 Patch4:		%{name}-not_user_check.patch
+#Patch5:	%{name}-path_to_adm.patch
 URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
@@ -130,6 +131,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+#%patch5 -p1
 
 %build
 ./configure \
@@ -138,10 +140,10 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf}
+install -d $RPM_BUILD_ROOT/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf,/bigsister/adm}
 
-%{__make} install-server install-client install-reporting install-modules install-doc \
-	DESTDIR=$RPM_BUILD_ROOT
+%{__make} install-server install-client install-reporting \
+	install-modules install-doc DESTDIR=$RPM_BUILD_ROOT
 
 mv -f	$RPM_BUILD_ROOT%{_sbindir}/* \
 	$RPM_BUILD_ROOT%{_bindir}
@@ -152,6 +154,15 @@ rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/init.d
 mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf \
 	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf 
 
+#TODO add patch and e-mail to author
+mv -f	$RPM_BUILD_ROOT%{_usr}/share/bigsister/etc/* \
+	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/adm
+cd $RPM_BUILD_ROOT%{_usr}/share/bigsister/
+ln -sf	%{_sysconfdir}/bigsister/adm etc 
+ln -sf	%{_var}/lib/bigsister/www www
+ln -sf	%{_sysconfdir}/bigsister/adm adm
+
+#TODO correct this file
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
@@ -184,6 +195,17 @@ if [ -f /var/lock/subsys/bigsister ]; then
 else
 	echo "Run \"/etc/rc.d/init.d/bigsister start\" to start Big Sister." >&2
 fi
+/usr/share/bigsister/bin/compile_skin webadmin
+/usr/share/bigsister/bin/compile_skin static_lamps
+/usr/share/bigsister/bin/compile_skin structured_bg
+/usr/share/bigsister/bin/compile_skin alt_contentsicons
+/usr/share/bigsister/bin/compile_skin bigbro13
+/usr/share/bigsister/bin/compile_skin bsdoc
+/usr/share/bigsister/bin/compile_skin compactmenu
+/usr/share/bigsister/bin/compile_skin frames
+/usr/share/bigsister/bin/compile_skin techie
+/usr/share/bigsister/bin/compile_skin title_in_table
+/usr/share/bigsister/bin/compile_skin twocolumn
 
 %preun
 if [ "$1" = "0" ]; then
@@ -224,12 +246,11 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bigsister
 %{_mandir}/man*/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister
-# XXX: /usr is not writable at runtime!
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/resources
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/OV
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/syslog
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/eventlog
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/tests.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/resources
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/OV
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/syslog
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/eventlog
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/tests.cfg
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/resources
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/uxmon-net
 %dir %{_usr}/share/bigsister/bin
@@ -288,17 +309,17 @@ fi
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/permissions
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/reporting
 %{_sysconfdir}/bigsister/reporting/*
-%attr(750,root,bs) %dir %{_usr}/share/bigsister/etc
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/adm
 # XXX: /usr is not writable at runtime!
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/bsmon.cfg
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/graphtemplates
-%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_usr}/share/bigsister/etc/keys
-%attr(750,root,bs) %dir %{_usr}/share/bigsister/etc/graphdef
-%{_usr}/share/bigsister/etc/graphdef/*
-%attr(750,root,bs) %dir %{_usr}/share/bigsister/etc/moduleinfo
-%{_usr}/share/bigsister/etc/moduleinfo/*
-%attr(750,root,bs) %dir %{_usr}/share/bigsister/etc/testdef
-%{_usr}/share/bigsister/etc/testdef/*
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/bsmon.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/graphtemplates
+%attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/adm/keys
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/adm/graphdef
+%{_sysconfdir}/bigsister/adm/graphdef/*
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/adm/moduleinfo
+%{_sysconfdir}/bigsister/adm/moduleinfo/*
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/adm/testdef
+%{_sysconfdir}/bigsister/adm/testdef/*
 %attr(755,root,root) %dir %{_usr}/share/bigsister/cgi
 %attr(755,root,root) %{_usr}/share/bigsister/cgi/bs*
 %attr(775,root,bs) %dir %{_var}/lib/bigsister
@@ -379,9 +400,9 @@ fi
 
 %files snmp
 %defattr(644,root,root,755)
-%{_usr}/share/bigsister/etc/mibs.txt
-%{_usr}/share/bigsister/etc/perf*
-%{_usr}/share/bigsister/etc/snmp_trap
+%{_sysconfdir}/bigsister/adm/mibs.txt
+%{_sysconfdir}/bigsister/adm/perf*
+%{_sysconfdir}/bigsister/adm/snmp_trap
 %attr(755,root,root) %{_usr}/share/bigsister/bin/bstrapd
 %{_usr}/share/bigsister/bin/snmp.pm
 %{_usr}/share/bigsister/uxmon/Config/_snmp
