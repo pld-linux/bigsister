@@ -8,7 +8,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.99b2
-Release:	0.2
+Release:	1
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -17,6 +17,7 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.bsmon.cfg
 Source4:	%{name}.uxmon-net
+Source5:	%{name}.htaccess
 Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
@@ -205,7 +206,7 @@ rm -f $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
 rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
-
+install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/bigsister/cgi/.htaccess
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -360,6 +361,7 @@ fi
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/bsmon.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/graphtemplates
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/keys
+%config(noreplace) %verify(not md5 mtime size) %{_datadir}/bigsister/cgi/.htaccess
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/graphdef
 %{_sysconfdir}/bigsister/etc/graphdef/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/moduleinfo
