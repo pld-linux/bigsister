@@ -176,19 +176,17 @@ ln -sf	%{_sysconfdir}/bigsister/etc etc
 #cd $RPM_BUILD_ROOT%{_var}/lib/bigsister
 #ln -sf	%{_var}/lib/bigsister/www www
 
-#correct this
-sed -e "s/\$RPM_BUILD_ROOT//g" \
-	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files 
-
-sed -e "s/\%{_usr}\/share\/bigsister\/etc/\%{_sysconfdir}\/bigsister\/etc/g" \
-	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files 
+#correct path in files
+cat $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files | sed -e "s#$RPM_BUILD_ROOT##g" | sed -e "s#%{_usr}/share/bigsister/etc#%{_sysconfdir}/bigsister/etc#g" > $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files.new
+rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files
+mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files.new \
+	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files
 
 #sed -e "s/\$RPM_BUILD_ROOT//g" \
 #	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/bsmon.cfg
 #sed -e "s/\$RPM_BUILD_ROOT//g" \
 #	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources
 
-#TODO correct this file
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
