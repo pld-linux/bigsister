@@ -3,7 +3,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.98c8
-Release:	0.3
+Release:	0.4
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/%{name}/big-sister-%{version}.tar.gz
@@ -29,9 +29,9 @@ BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_prefix		/usr/lib/bs
-%define		_htmldir	/home/services/httpd/html
+%define		_htmldir	/srv/httpd/html
 %define		_htmlsubdir	%{_htmldir}/bs
-%define		_cgidir		/home/services/httpd/cgi-bin
+%define		_cgidir		/srv/httpd/cgi-bin
 %define		_vardir		/var/lib/bs
 %define		_etcdir		%{_sysconfdir}/bs
 
