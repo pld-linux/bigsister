@@ -1,12 +1,12 @@
 #TODO
-# - package bigsister --> bigsister-agent
+# - corect path for files and directory in /etc/bigsister/etc/* - Patch5 (FHS)
 #/TODO
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.99b2
-Release:	0.1
+Release:	0.2
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -17,6 +17,7 @@ Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
 Patch4:		%{name}-not_user_check.patch
+#Patch5:		%{name}-path_to_adm.patch
 URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
@@ -139,6 +140,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+#%patch5 -p1
 
 %build
 ./configure \
@@ -339,7 +341,6 @@ fi
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/reporting
 %{_sysconfdir}/bigsister/reporting/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc
-# XXX: /usr is not writable at runtime!
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/bsmon.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/graphtemplates
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/keys
