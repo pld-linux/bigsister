@@ -6,7 +6,7 @@ Version:	0.97p2
 Release:	4
 License:	GPL
 Group:		Networking
-Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/%{name}/big-sister-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/%{name}/big-sister-%{version}.tar.gz
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-memory.patch
