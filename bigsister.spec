@@ -14,9 +14,9 @@ Patch0:		%{name}-memory.patch
 Patch1:		%{name}-dns-use-host.patch
 Patch2:		%{name}-logfile-notranslated.patch
 URL:		http://bigsister.graeff.com/
-BuildRequires:	rpm-perlprov >= 4.0.2-47
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
+BuildRequires:	rpm-perlprov >= 4.0.2-104
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
@@ -116,7 +116,6 @@ Summary:	Big Sister plugin for monitoring using SNMP
 Summary(pl):	Wtyczka Big Sister do monitorowania z u¿yciem SNMP
 Group:		Networking
 Requires:	%{name} = %{version}
-Requires:	perl-SNMP_Session perl(SNMP_Session) perl(SNMP_util) perl(BER)
 
 %description snmp
 Big Sister plugin for monitoring using SNMP.
