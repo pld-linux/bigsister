@@ -159,7 +159,7 @@ install -d $RPM_BUILD_ROOT{%{_cgidir},%{_htmldir},%{_etcdir},/etc/sysconfig,%{_v
 #	USER=`id -nu` \
 #	DEST=$RPM_BUILD_ROOT%{_libdir}/bs \
 
-%define         _prefix         /usr
+%define		_prefix		/usr
 
 install -d $RPM_BUILD_ROOT%{_mandir}
 mv -f $RPM_BUILD_ROOT%{_libdir}/bs/www $RPM_BUILD_ROOT%{_htmlsubdir}
