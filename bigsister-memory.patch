@@ -1,10 +1,42 @@
 --- bs-0.97/uxmon/Config/memory.orig	Wed Nov 22 21:34:15 2000
-+++ bs-0.97/uxmon/Config/memory	Tue Jan 22 14:25:08 2002
-@@ -61,7 +61,6 @@
++++ bs-0.97/uxmon/Config/memory	Fri Jun  7 14:20:54 2002
+@@ -39,30 +39,23 @@
+ 	);
+ 	$meminfo->sched_frequency($args{"frequency"});
+     }
+-    @check = ( 
+-	"%swap free", sub { 
+-	    my( $vars ) = @_;
+-	    return(undef) unless( defined $vars->{"linux.meminfo.%SwapFree"} );
+-	    $vars->{"linux.meminfo.%SwapFree"};
+-	}, 10,
+-	"avail swap MB", sub {
+-	    my( $vars ) = @_; 
+-	    return(undef) unless( defined $vars->{"linux.meminfo.SwapFree"} );
+-	    $vars->{"linux.meminfo.SwapFree"} /1024/1024;
+-	}, 10
+-    );
++    @check = (
++	"%swap free", "linux.meminfo.%SwapFree", 1, 10,
++	"avail swap MB", "linux.meminfo.SwapFree", 1024*1024, 10
++    )
+ }
+ 
+ 
+ while( @check ) {
+     my $text = shift( @check );
+-    my $val = shift( @check );
++    my $valname = shift( @check );
++    my $valdiv = shift( @check );
+     my $limit = shift( @check );
      $args{"_evaluator"}->add_check( ($args{"check"}?$args{"check"}:"cpu"), sub {
  	my( $vars ) = @_;
- 
+-
 -	my $val = &$val($vars);
- 	return( 2, "(no data available)" ) unless( defined $val );
+-	return( 2, "(no data available)" ) unless( defined $val );
++	return( 2, "(no data available)" ) unless( defined $vars->{$valname} );
++	my $val = $vars->{$valname} / $valdiv;
++	
  	$val = int($val+0.5);
  	if( $val > $limit ) {
+ 	    return( 3, $text." = $val" );
