@@ -229,7 +229,7 @@ fi
 %attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/resources
 %attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/syslog
 %attr(754,root,root) /etc/rc.d/init.d/bigsister
-%attr(640,root,root)%config(noreplace) %verify(not size mtime md5) /etc/sysconfig/bigsister
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/bigsister
 %attr(771,root,bs) %{_vardir}
 %dir %{_libdir}/bs
 %{_libdir}/bs/adm
