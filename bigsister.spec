@@ -3,10 +3,11 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.97p2
-Release:	3
+Release:	4
 License:	GPL
 Group:		Networking
 Source0:	ftp://ftp.sourceforge.net/pub/sourceforge/%{name}/big-sister-%{version}.tar.gz
+# Source0-md5:	dd8d0822b7e7089aa4c3e25a90cedb04
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Patch0:		%{name}-memory.patch
