@@ -3,7 +3,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.98c8
-Release:	0.1
+Release:	0.3
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/%{name}/big-sister-%{version}.tar.gz
@@ -235,14 +235,14 @@ fi
 %{_mandir}/man*/*
 %attr(750,root,bs) %dir %{_etcdir}
 %attr(750,root,bs) %dir %{_etcdir}/adm
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/resources
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/uxmon-net
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/resources
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/uxmon-net
 %attr(750,root,bs) %dir %{_etcdir}/etc
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/OV
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/resources
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/syslog
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/eventlog
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/tests.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/OV
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/resources
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/syslog
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/eventlog
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/tests.cfg
 %attr(754,root,root) /etc/rc.d/init.d/bigsister
 %attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/bigsister
 %attr(771,root,bs) %{_vardir}
@@ -262,7 +262,7 @@ fi
 %attr(755,root,root) %{_libdir}/bs/bin/testers
 %{_libdir}/bs/bin/snmp.pm
 %attr(755,root,root) %{_libdir}/bs/bin/bbecho
-%attr(755,root,root) %{_libdir}/bs/bin/bsadmin
+%attr(775,root,bs) %{_libdir}/bs/bin/bsadmin
 %{_libdir}/bs/etc
 %dir %{_libdir}/bs/uxmon
 %dir %{_libdir}/bs/uxmon/Config
@@ -296,16 +296,16 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bb-display.cfg
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bb_event_generator.cfg
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bsmon_site.cfg
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/notify.cfg
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/permissions
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bb-display.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bb_event_generator.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/bsmon_site.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/notify.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/adm/permissions
 %attr(750,root,bs) %dir %{_etcdir}/adm/reporting
 %{_etcdir}/adm/reporting/*
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/bsmon.cfg
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/graphtemplates
-%attr(640,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/keys
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/bsmon.cfg
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/graphtemplates
+%attr(660,root,bs) %config(noreplace) %verify(not size mtime md5) %{_etcdir}/etc/keys
 %attr(750,root,bs) %dir %{_etcdir}/etc/graphdef
 %{_etcdir}/etc/graphdef/*
 %attr(750,root,bs) %dir %{_etcdir}/etc/moduleinfo
