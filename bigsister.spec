@@ -75,6 +75,9 @@ Summary:	Big Sister plugin for monitoring LDAP
 Summary(pl):	Wtyczka Big Sister do monitorowania LDAP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
+Requires:	apache
+Requires:	apache-mod_perl
+
 
 %description ldap
 Big Sister plugin for monitoring LDAP.
