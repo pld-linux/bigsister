@@ -37,7 +37,7 @@ case "$1" in
 			uxmonprefix="su - bs -s /bin/sh"
 		fi
 		umask 022
-	  	if [ -f /usr/share/bigsister/bin/bsmon -a -f /etc/bigsister/adm/bsmon.cfg ]; then
+	  	if [ -f /usr/share/bigsister/bin/bsmon ]; then
 			msg_starting "Big Sister bsmon"
 			$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/bin/bsmon" > /dev/null 2>&1
 			RETVAL=$?
