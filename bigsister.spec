@@ -26,9 +26,9 @@ Provides:	perl(Monitor::uxmon)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_htmldir	/home/httpd/html
+%define		_htmldir	/home/services/httpd/html
 %define		_htmlsubdir	%{_htmldir}/bs
-%define		_cgidir		/home/httpd/cgi-bin
+%define		_cgidir		/home/services/httpd/cgi-bin
 %define		_vardir		/var/lib/bs
 %define		_etcdir		%{_sysconfdir}/bs
 
