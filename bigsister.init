@@ -25,17 +25,6 @@ else
 	exit 0
 fi
 
-bs_killproc() {		# kill the named process(es)
-	msg_stopping "${4-$1}"
-	pid=`ps -e -o pid,comm,args 2>/dev/null | grep -w perl 2>/dev/null | grep " $1 " 2>/dev/null | grep -v grep | awk '{ print $1 }'`
-	if [ "$pid" != "" ]; then 
-		kill $2 $pid && ok || fail
-	else
-		[ "$3" != "y" ] && ok || died
-	fi
-}
-
-
 RETVAL=0
 # See how we were called.
 case "$1" in
@@ -74,7 +63,7 @@ case "$1" in
 				;;
 			esac
 		done
-		if [ -f /etc/bigsister/adm/bstrapd.cfg ]; then
+		if [ -f /etc/bigsister/etc/bstrapd.cfg ]; then
 			# bstrapd will only run as root
 			msg_starting "Big Sister bstrapd"
 			/usr/bin/setsid /usr/share/bigsister/bin/bstrapd >/dev/null 2>&1
@@ -87,15 +76,21 @@ case "$1" in
 	;;
   stop)
 	if [ -f /var/lock/subsys/bigsister ]; then
-		bs_killproc uxmon -QUIT y "Big Sister uxmon"
-		bs_killproc bbd -QUIT n "Big Sister bbd if running"
-		bs_killproc bb_event_generator -QUIT n "Big Sister bb_event_generator if running"
-		bs_killproc bsmon -QUIT n "Big Sister bsmon if running"
-		bs_killproc bstrapd -QUIT n "Big Sister bstrapd if running"
-		rm -f /var/lock/subsys/bigsister
-	else
-		msg_not_running "Big Sister"
-	fi
+		msg_stopping "Big Sister uxmon"
+		killproc uxmon
+	       	msg_stopping "Big Sister bsmon if running"
+		killproc bsmon
+		msg_stopping "Big Sister bbd if running"
+		killproc bbd
+		msg_stopping "Big Sister bb_event_generator if running"
+		killproc bb_event_generator
+		msg_stopping "Big Sister bstrapd if running"
+		killproc bstrapd
+	rm -f /var/lock/subsys/bigsister 
+        else
+                msg_not_running "Big Sister"
+        fi
+	
 	;;
   status)
 	;;
@@ -108,5 +103,4 @@ case "$1" in
 	msg_usage "$0 {start|stop|restart|force-reload|status}"
 	exit 3
 esac
-
 exit $RETVAL
