@@ -17,6 +17,7 @@ URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
 BuildRequires:	rpm-perlprov >= 4.0.2-104
+BuildRequires:	rpmbuild(macros) >= 1.159
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
@@ -24,6 +25,8 @@ Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
+Provides:	group(bs)
+Provides:	user(bs)
 Provides:	perl(Monitor::uxmon)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -177,12 +180,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ -n "`/usr/bin/getgid bs`" ]; then
-	if [ "`getgid bs`" != "77" ]; then
+	if [ "`/usr/bin/getgid bs`" != 77 ]; then
 		echo "Error: group bs doesn't have gid=77. Correct this before installing bigsister." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g 77 -r -f bs
+	/usr/sbin/groupadd -g 77 bs
 fi
 if [ -n "`/bin/id -u bs 2>/dev/null`" ]; then
 	if [ "`/bin/id -u bs`" != "77" ]; then
@@ -190,7 +193,8 @@ if [ -n "`/bin/id -u bs 2>/dev/null`" ]; then
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -u 77 -r -d /var/lib/bs -s /bin/false -c "Big Sister" -g bs bs 1>&2
+	/usr/sbin/useradd -u 77 -d /var/lib/bs -s /bin/false \
+		-c "Big Sister" -g bs bs 1>&2
 fi
 
 %post
@@ -211,8 +215,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	/usr/sbin/userdel bs 2> /dev/null
-	/usr/sbin/groupdel bs 2> /dev/null
+	%userremove bs
+	%groupremove bs
 fi
 
 %post server
