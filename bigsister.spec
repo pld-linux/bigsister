@@ -130,7 +130,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %patch2 -p1
 
 %build
-%{__perl} -pi -e 's/^(bin:.*)check/\1/;s/^(install-.*) bin/\1/' Makefile
+%{__perl} -pi -e 's/^(bin:.*)check/$1/;s/^(install-.*) bin/$1/' Makefile
 %{__make} bin \
 	USER=bs \
 	DEST=%{_libdir}/bs \
