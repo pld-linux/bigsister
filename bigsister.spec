@@ -140,7 +140,8 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}{/rc.d/init.d,/sysconfig,/httpd/httpd.co
 %{__make} install-server install-client install-reporting install-modules install-doc \
 	DESTDIR=$RPM_BUILD_ROOT
 #TODO
-# - change path (FHS) in makefile or configure
+# - change path (FHS) in makefile or configure (patch)
+# - add package bigsister-agent
 #/TODO
 mv -f	$RPM_BUILD_ROOT%{_var}/lib/bigsister/www \
 	$RPM_BUILD_ROOT%{_usr}/share/bigsister/www
