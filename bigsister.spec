@@ -19,7 +19,7 @@ Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
 Patch4:		%{name}-not_user_check.patch
-#Patch5:		%{name}-path_to_adm.patch
+Patch5:		%{name}-path_to_adm.patch
 URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
@@ -155,7 +155,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 	
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf,/bigsister/etc},%{_var}/lib/bigsister/www/graphs}
+install -d $RPM_BUILD_ROOT{/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf},%{_var}/lib/bigsister{/graphs,/www/graphs}}
 
 %{__make} install-server install-client install-reporting \
 	install-modules install-doc DESTDIR=$RPM_BUILD_ROOT
@@ -174,14 +174,12 @@ mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf \
 # -corect directory in /etc/bigsister and /etc/bigsister/etc
 # 
 
-mv -f	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc/* \
-	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc
+mv -f	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc \
+	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister
+rm -rf	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc
 cd $RPM_BUILD_ROOT%{_datadir}/bigsister
-#ln -sf	%{_sysconfdir}/bigsister/etc etc 
 ln -sf	%{_var}/lib/bigsister/www www
 ln -sf	%{_sysconfdir}/bigsister/etc etc
-#cd $RPM_BUILD_ROOT%{_var}/lib/bigsister
-#ln -sf	%{_var}/lib/bigsister/www www
 
 #correct path in files
 cat $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files | sed -e "s#$RPM_BUILD_ROOT##g" | sed -e "s#%{_datadir}/bigsister/etc#%{_sysconfdir}/bigsister/etc#g" > $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files.new
@@ -191,8 +189,11 @@ mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files.new \
 
 #sed -e "s/\$RPM_BUILD_ROOT//g" \
 #	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/bsmon.cfg
-#sed -e "s/\$RPM_BUILD_ROOT//g" \
-#	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources
+
+cat $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources | sed -e "s#%{_datadir}/bigsister/etc#%{_sysconfdir}/bigsister/etc#g" > $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new
+rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources 
+mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new \
+	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources 
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
@@ -358,6 +359,7 @@ fi
 %attr(755,root,root) %dir %{_datadir}/bigsister/cgi
 %attr(755,root,root) %{_datadir}/bigsister/cgi/bs*
 %attr(775,root,bs) %dir %{_var}/lib/bigsister
+%attr(775,root,bs) %dir %{_var}/lib/bigsister/graphs
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/graphs
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/html
@@ -371,7 +373,7 @@ fi
 %attr(664,root,bs) %{_var}/lib/bigsister/www/skins/techie/*
 
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/title_in_table
-%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/title_in_table*
+%attr(664,root,bs) %{_var}/lib/bigsister/www/skins/title_in_table/*
 
 %attr(775,root,bs) %dir %{_var}/lib/bigsister/www/skins/twocolumn
 %attr(664,root,bs) %{_var}/lib/bigsister/www/skins/twocolumn/*
