@@ -52,13 +52,13 @@ case "$1" in
 			msg_starting "Big Sister bsmon"
 			$uxmonprefix -c "/usr/bin/setsid /usr/lib/bs/bin/bsmon" > /dev/null 2>&1
 			RETVAL=$?
-			[ "$RETVAL" = "0" ] && ok || ( fail ; exit $RETVAL )
+			[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 		fi
 		if [ -f /usr/lib/bs/bin/bbd -a -f /etc/bs/adm/bb-display.cfg ]; then
 			msg_starting "Big Sister bbd"
 			$uxmonprefix -c "/usr/bin/setsid /usr/lib/bs/bin/bbd -b /usr/lib/bs $BBD_ARGS" >/dev/null 2>&1
 			RETVAL=$?
-			[ "$RETVAL" = "0" ] && ok || ( fail ; exit $RETVAL )
+			[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 		fi
 		for f in /etc/bs/adm/uxmon-net* ; do
 			set `basename $f`
@@ -70,7 +70,7 @@ case "$1" in
 			  	msg_starting "Big Sister uxmon $1"
 				$uxmonprefix -c "/usr/bin/setsid /usr/lib/bs/uxmon/uxmon -r /usr/lib/bs/uxmon/uxmon-rules.pl -b /usr/lib/bs -c $1" >/dev/null 2>&1
 				RETVAL=$?
-				[ "$RETVAL" = "0" ] && ok || ( fail ; exit $RETVAL )
+				[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 				;;
 			esac
 		done
@@ -78,7 +78,7 @@ case "$1" in
 			# bstrapd will only run as root
 			msg_starting "Big Sister bstrapd"
 			/usr/bin/setsid /usr/lib/bs/bin/bstrapd >/dev/null 2>&1
-			[ "$RETVAL" = "0" ] && ok || ( fail ; exit $RETVAL )
+			[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 		fi
 		touch /var/lock/subsys/bigsister
 	else
@@ -97,7 +97,7 @@ case "$1" in
 		msg_not_running "Big Sister"
 	fi
 	;;
-  status
+  status)
 	;;
   restart|force-reload)
   	$0 stop
@@ -107,7 +107,6 @@ case "$1" in
   *)
 	msg_usage "$0 {start|stop|restart|force-reload|status}"
 	exit 3
-	;;
 esac
 
 exit $RETVAL
