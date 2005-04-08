@@ -8,7 +8,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów
 Name:		bigsister
 Version:	0.99b2
-Release:	1
+Release:	2	
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -35,7 +35,7 @@ Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
-Requires:	nscd
+#Requires:	nscd
 Provides:	group(bs)
 Provides:	user(bs)
 Provides:	perl(Monitor::uxmon)
