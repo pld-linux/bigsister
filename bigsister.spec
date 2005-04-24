@@ -2,13 +2,17 @@
 # - corect path for files and directory in /etc/bigsister/etc/* - Patch5 (FHS)
 # - security for webpage and admin page
 # - subpackages for skins??????
+# - add patch and e-mail to author
+# - corect directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
+# 
+
 #/TODO
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
-Summary(pl):	Wielka Siostra - monitor sieci i systemów
+Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	0.99b2
-Release:	2	
+Release:	3	
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -18,11 +22,14 @@ Source2:	%{name}.sysconfig
 Source3:	%{name}.bsmon.cfg
 Source4:	%{name}.uxmon-net
 Source5:	%{name}.htaccess
+Source6:	%{name}.uxmon-asroot
+Source7:	%{name}.httpd_conf
 Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
 Patch4:		%{name}-not_user_check.patch
-#Patch5:		%{name}-path_to_adm.patch
+#Patch5:	%{name}-lang_lcmessages.patch
+#Patch6:	%{name}-path_to_adm.patch
 URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
@@ -149,7 +156,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %patch3 -p1
 %patch4 -p1
 #%patch5 -p1
-
+#%patch6 -p1
 %build
 ./configure \
 	--with-user=bs \
@@ -169,14 +176,6 @@ rm -rf	$RPM_BUILD_ROOT%{_sbindir}
 
 rm -rf	$RPM_BUILD_ROOT/etc/init.d
 
-mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf \
-	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf 
-
-#TODO 
-# -add patch and e-mail to author
-# -corect directory in /etc/bigsister and /etc/bigsister/etc
-# 
-
 mv -f	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc \
 	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister
 rm -rf	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc
@@ -191,9 +190,6 @@ rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files
 mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files.new \
 	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files
 
-#sed -e "s/\$RPM_BUILD_ROOT//g" \
-#	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/bsmon.cfg
-
 cat $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources | sed -e "s#%{_datadir}/bigsister/etc#%{_sysconfdir}/bigsister/etc#g" > $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new
 rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources 
 mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new \
@@ -204,9 +200,14 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 # basic config file
 rm -f $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
 rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf
+
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
+install %{SOURCE6} $RPM_BUILD_ROOT/etc/bigsister/uxmon-asroot
 install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/bigsister/cgi/.htaccess
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/httpd/httpd.conf/92_bigsister.conf
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -269,6 +270,12 @@ fi
 %{_datadir}/bigsister/bin/compile_skin default
 %{_datadir}/bigsister/bin/compile_skin white_bg
 
+if ![ -f /etc/bigsister/password ]; then
+	PASS='date +%N'
+	/usr/bin/htpasswd -cb /etc/bigsister/password admin $PASS
+	echo "Your web pasword is: $PASS ."
+	echo "Change this: htpasswd -b /etc/bigsister/password user password"
+fi
 
 if [ -f /var/lock/subsys/bigsister ]; then
 	/etc/rc.d/init.d/bigsister restart >&2
@@ -287,7 +294,6 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/bs*
 %doc %{_datadir}/doc/bigsister 
-%{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf
 %attr(755,root,root) /etc/cron.weekly/bigsister_logs
 %attr(754,root,root) /etc/rc.d/init.d/bigsister
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bigsister
@@ -301,6 +307,7 @@ fi
 %attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/tests.cfg
 %attr(644,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/resources
 %attr(640,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/uxmon-net
+%attr(640,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/uxmon-asroot
 %dir %{_datadir}/bigsister
 %{_datadir}/bigsister/etc
 %{_datadir}/bigsister/var
@@ -355,6 +362,7 @@ fi
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/bsmon_site.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/notify.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/permissions
+%attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/reporting
 %{_sysconfdir}/bigsister/reporting/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc
