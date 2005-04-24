@@ -10,7 +10,8 @@
 
 # Get network config
 . /etc/sysconfig/network
-
+# fix the problem, making sure that bigsister only see english messages
+LANG=C LC_MESSAGES=C export LANG LC_MESSAGES
 # Get service config
 [ -f /etc/sysconfig/bigsister ] && . /etc/sysconfig/bigsister
 
@@ -30,12 +31,12 @@ RETVAL=0
 case "$1" in
   start)
 	# Check if the service is already running?
-	if [ ! -f /var/lock/subsys/bigsister ]; then
-		if is_yes "$UXMON_ASROOT" ; then
-			uxmonprefix="/bin/sh"
-		else
-			uxmonprefix="su - bs -s /bin/sh"
-		fi
+#	if [ ! -f /var/lock/subsys/bigsister ]; then
+#		if is_yes "$UXMON_ASROOT" ; then
+#			uxmonprefix="/bin/sh"
+#		else
+#			uxmonprefix="su - bs -s /bin/sh"
+#		fi
 		umask 022
 	  	if [ -f /usr/share/bigsister/bin/bsmon ]; then
 			msg_starting "Big Sister bsmon"
@@ -49,6 +50,20 @@ case "$1" in
 			RETVAL=$?
 			[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 		fi
+		for f in /etc/bigsister/uxmon-asroot* ; do
+			set `basename $f`
+			case $1 in
+			  *bak|*%|*~|*.rpmsave|*.rpmorig|*.rpmnew)
+				continue
+				;;
+			  *)
+			  	msg_starting "Big Sister uxmon $1"
+				/bin/sh -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /usr/share/bigsister -c /etc/bigsister/uxmon-asroot" >/dev/null 2>&1
+				RETVAL=$?
+				[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
+				;;
+			esac
+		done
 		for f in /etc/bigsister/uxmon-net* ; do
 			set `basename $f`
 			case $1 in
@@ -57,7 +72,7 @@ case "$1" in
 				;;
 			  *)
 			  	msg_starting "Big Sister uxmon $1"
-				$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /usr/share/bigsister -c /etc/bigsister/uxmon-net" >/dev/null 2>&1
+				su - bs -s /bin/sh -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /usr/share/bigsister -c /etc/bigsister/uxmon-net" >/dev/null 2>&1
 				RETVAL=$?
 				[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
 				;;
@@ -76,6 +91,8 @@ case "$1" in
 	;;
   stop)
 	if [ -f /var/lock/subsys/bigsister ]; then
+		msg_stopping "Big Sister uxmon"
+		killproc uxmon
 		msg_stopping "Big Sister uxmon"
 		killproc uxmon
 	       	msg_stopping "Big Sister bsmon if running"
