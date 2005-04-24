@@ -31,12 +31,12 @@ RETVAL=0
 case "$1" in
   start)
 	# Check if the service is already running?
-#	if [ ! -f /var/lock/subsys/bigsister ]; then
-#		if is_yes "$UXMON_ASROOT" ; then
-#			uxmonprefix="/bin/sh"
-#		else
-#			uxmonprefix="su - bs -s /bin/sh"
-#		fi
+	if [ ! -f /var/lock/subsys/bigsister ]; then
+		if is_yes "$UXMON_ASROOT" ; then
+			uxmonprefix="/bin/sh"
+		else
+			uxmonprefix="su - bs -s /bin/sh"
+		fi
 		umask 022
 	  	if [ -f /usr/share/bigsister/bin/bsmon ]; then
 			msg_starting "Big Sister bsmon"
