@@ -271,7 +271,7 @@ fi
 %{_datadir}/bigsister/bin/compile_skin white_bg
 
 if ![ -f /etc/bigsister/password ]; then
-	PASS='date +%N'
+	openssl rand -base64 6 > $PASS
 	/usr/bin/htpasswd -cb /etc/bigsister/password admin $PASS
 	echo "Your web pasword is: $PASS ."
 	echo "Change this: htpasswd -b /etc/bigsister/password user password"
