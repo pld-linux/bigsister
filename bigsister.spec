@@ -24,6 +24,7 @@ Source4:	%{name}.uxmon-net
 Source5:	%{name}.htaccess
 Source6:	%{name}.uxmon-asroot
 Source7:	%{name}.httpd_conf
+Source8:	%{name}.mibs.txt
 Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
@@ -205,12 +206,15 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 rm -f $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
 rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 rm -f $RPM_BUILD_ROOT/etc/bigsister/httpd.conf
+rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/mibs.txt
+
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/bigsister/uxmon-asroot
 install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/bigsister/cgi/.htaccess
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/httpd/httpd.conf/92_bigsister.conf
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/bigsister/etc/mibs.txt
 
 
 %clean
