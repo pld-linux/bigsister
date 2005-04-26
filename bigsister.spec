@@ -42,6 +42,7 @@ Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
+Requires:	sysstat
 #Requires:	nscd
 Provides:	group(bs)
 Provides:	user(bs)
