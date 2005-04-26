@@ -165,20 +165,22 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 	
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
+install -d $RPM_BUILD_ROOT{/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf,/cron.weekly},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
 
 %{__make} install-server install-client install-reporting \
 	install-modules install-doc DESTDIR=$RPM_BUILD_ROOT
 #install-win32
 mv -f	$RPM_BUILD_ROOT%{_sbindir}/* \
 	$RPM_BUILD_ROOT%{_bindir}
-rm -rf	$RPM_BUILD_ROOT%{_sbindir}
 
+rm -rf	$RPM_BUILD_ROOT%{_sbindir}
 rm -rf	$RPM_BUILD_ROOT/etc/init.d
 
 mv -f	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc \
 	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister
+
 rm -rf	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc
+
 cd $RPM_BUILD_ROOT%{_datadir}/bigsister
 ln -sf	%{_var}/lib/bigsister/www www
 ln -sf	%{_var}/lib/bigsister var
@@ -197,10 +199,11 @@ mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new \
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+
 # basic config file
 rm -f $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
 rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/httpd.conf
+rm -f $RPM_BUILD_ROOT/etc/bigsister/httpd.conf
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
