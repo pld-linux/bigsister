@@ -35,7 +35,8 @@ URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
 BuildRequires:	rpm-perlprov >= 4.0.2-104
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	post-server-is-broken
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
@@ -221,32 +222,16 @@ install %{SOURCE7} $RPM_BUILD_ROOT/etc/bigsister/etc/mibs.txt
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`/usr/bin/getgid bs`" ]; then
-	if [ "`/usr/bin/getgid bs`" != 77 ]; then
-		echo "Error: group bs doesn't have gid=77. Correct this before installing bigsister." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/groupadd -g 77 bs
-fi
-if [ -n "`/bin/id -u bs 2>/dev/null`" ]; then
-	if [ "`/bin/id -u bs`" != "77" ]; then
-		echo "Error: user bs doesn't have uid=77. Correct this before installing bigsister." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/useradd -u 77 -d %{_var}/lib/bigsister/www \
-	-s /bin/false -c "Big Sister" -g bs bs 1>&2
-fi
-%post
+%groupadd -g 77 bs
+%useradd -u 77 -d %{_var}/lib/bigsister/www -s /bin/false -c "Big Sister" -g bs bs
 
+%post
 /sbin/chkconfig --add bigsister
 if [ -f /var/lock/subsys/bigsister ]; then
 	/etc/rc.d/init.d/bigsister restart >&2
 else
 	echo "Run \"/etc/rc.d/init.d/bigsister start\" to start Big Sister." >&2
 fi
-
 
 %preun
 if [ "$1" = "0" ]; then
@@ -263,7 +248,6 @@ if [ "$1" = "0" ]; then
 fi
 
 %post server
-
 %{_datadir}/bigsister/bin/compile_skin webadmin
 %{_datadir}/bigsister/bin/compile_skin static_lamps
 %{_datadir}/bigsister/bin/compile_skin structured_bg
@@ -278,7 +262,8 @@ fi
 %{_datadir}/bigsister/bin/compile_skin default
 %{_datadir}/bigsister/bin/compile_skin white_bg
 
-if ![ -f /etc/bigsister/password ]; then
+if [ ! -f /etc/bigsister/password ]; then
+# FIXME $PASS variable cames from?
 	openssl rand -base64 6 > $PASS
 	/usr/bin/htpasswd -cb /etc/bigsister/password admin $PASS
 	echo "Your web pasword is: $PASS ."
@@ -449,6 +434,7 @@ fi
 %{_datadir}/bigsister/bin/bscgi.pm
 %{_datadir}/bigsister/bin/display_map.pm
 #te dwa tutaj powinny byc???
+# and in english it means?
 %{_datadir}/bigsister/bin/BER.pm
 %{_datadir}/bigsister/bin/IPCFile.pm
 #
