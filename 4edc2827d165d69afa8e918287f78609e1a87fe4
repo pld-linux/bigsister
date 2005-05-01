@@ -1,0 +1,3 @@
+- removed BR: sed
+- unified
+- removed dup file, simplified %files a bit
