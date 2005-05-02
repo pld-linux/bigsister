@@ -168,7 +168,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 	
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc{/rc.d/init.d,/sysconfig,/httpd/httpd.conf,/cron.weekly},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
+install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,httpd/httpd.conf,cron.weekly},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
 
 %{__make} install-server install-client install-reporting \
 	install-modules install-doc DESTDIR=$RPM_BUILD_ROOT
