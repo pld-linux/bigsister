@@ -102,11 +102,10 @@ case "$1" in
 		killproc bb_event_generator
 		msg_stopping "Big Sister bstrapd if running"
 		killproc bstrapd
-	rm -f /var/lock/subsys/bigsister 
+	rm -f /var/lock/subsys/bigsister
         else
                 msg_not_running "Big Sister"
         fi
-	
 	;;
   status)
 	;;
