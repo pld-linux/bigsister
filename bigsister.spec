@@ -4,7 +4,7 @@
 # - subpackages for skins??????
 # - add patch and e-mail to author
 # - corect directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
-# 
+#
 
 #/TODO
 %include	/usr/lib/rpm/macros.perl
@@ -12,7 +12,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	0.99b2
-Release:	3	
+Release:	3
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -34,21 +34,21 @@ Patch4:		%{name}-not_user_check.patch
 URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
+BuildRequires:	post-server-is-broken
 BuildRequires:	rpm-perlprov >= 4.0.2-104
 BuildRequires:	rpmbuild(macros) >= 1.202
-BuildRequires:	post-server-is-broken
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
-Requires(post,preun):	/sbin/chkconfig
-Requires:	sysstat
 #Requires:	nscd
+Requires:	sysstat
 Provides:	group(bs)
-Provides:	user(bs)
 Provides:	perl(Monitor::uxmon)
+Provides:	user(bs)
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -71,12 +71,12 @@ Summary(pl):	Serwer Big Sister
 Group:		Networking
 Requires(post,postun):	%{name} = %{version}-%{release}
 Requires:	%{name} = %{version}-%{release}
-Requires:	perl-Net-SNMP
+Requires:	perl-FCGI
 Requires:	perl-GD-Graph-Map
 Requires:	perl-Net-SMTP-Receive
+Requires:	perl-Net-SNMP
 Requires:	perl-libwww
 Requires:	rrdtool
-Requires:	perl-FCGI
 
 %description server
 Big Sister server part: display, status collector, alarm generator.
@@ -164,7 +164,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 	--with-user=bs \
 	--enable-FHS
 #	--with-url=/bs
-	
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,httpd/httpd.conf,cron.weekly},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
