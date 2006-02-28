@@ -265,7 +265,7 @@ if [ ! -f /etc/bigsister/password ]; then
 # FIXME $PASS variable cames from?
 	openssl rand -base64 6 > $PASS
 	/usr/bin/htpasswd -cb /etc/bigsister/password admin $PASS
-	echo "Your web pasword is: $PASS ."
+	echo "Your web password is: $PASS ."
 	echo "Change this: htpasswd -b /etc/bigsister/password user password"
 fi
 
