@@ -1,20 +1,20 @@
 --- bs-0.98c8/Makefile.in.fix	2003-12-02 13:39:51.511209088 +0100
 +++ bs-0.98c8/Makefile.in	2003-12-02 13:40:50.117299608 +0100
-@@ -97,7 +97,7 @@
- 	./install.sh ${USER} 555 tools/bb_start.pl ${DESTDIR}${BIN_DIR}/bb_start
- 	if [ "${INIT_DIR}" != "" -a ! -d "${DESTDIR}${INIT_DIR}" ]; then ./install.sh root 555 -d ${DESTDIR}${INIT_DIR}; else true; fi
- 	if [ "${INIT_DIR}" != "" ]; then ./install.sh ${USER} 555 tools/bs_boot.sh ${DESTDIR}${INIT_DIR}/bigsister; else true; fi
+@@ -99,7 +99,7 @@
+ 	./install.sh ${GROUP} ${USER} 555 tools/bb_start.pl ${DESTDIR}${BIN_DIR}/bb_start
+ 	if [ "${INIT_DIR}" != "" -a ! -d "${DESTDIR}${INIT_DIR}" ]; then ./install.sh ${GROUP} root 755 -d ${DESTDIR}${INIT_DIR}; else true; fi
+ 	if [ "${INIT_DIR}" != "" ]; then ./install.sh ${GROUP} ${USER} 555 tools/bs_boot.sh ${DESTDIR}${INIT_DIR}/bigsister; else true; fi
 -	if [ "${INIT_DIR}" != "" ] && [ "${CHKCONFIG}" != "" ]; then ${CHKCONFIG} --add bigsister ; else true; fi
 +#	if [ "${INIT_DIR}" != "" ] && [ "${CHKCONFIG}" != "" ]; then ${CHKCONFIG} --add bigsister ; else true; fi
- 	./install.sh ${USER} 555 bb_start32.pl ${DESTDIR}${BIN_DIR}/bb_start32
- 	./install.sh ${USER} 555 bb_stop32.pl ${DESTDIR}${BIN_DIR}/bb_stop32
- 	./install.sh ${USER} 555 platforms/Platforms.pm ${DESTDIR}${BIN_DIR}
-@@ -202,7 +202,7 @@
- 	./install.sh ${USER} 444 etc/perf ${DESTDIR}${ETC_DIR}
- 	./install.sh ${USER} 444 etc/perfslow ${DESTDIR}${ETC_DIR}
- 	./install.sh ${USER} 444 etc/tests.cfg ${DESTDIR}${ETC_DIR}
--	./install.sh ${USER} 555 uxmon/Monitor/* ${DESTDIR}${BIN_DIR}/Monitor
-+	./install.sh ${USER} 555 uxmon/Monitor/* ${DESTDIR}${UXMON_DIR}/Monitor
- 	./install.sh ${USER} 444 uxmon/Config/* ${DESTDIR}${UXMON_DIR}/Config
- 	./install.sh ${USER} 555 uxmon/Requester/* ${DESTDIR}${UXMON_DIR}/Requester
- 	./install_links ${DESTDIR}${UXMON_DIR}/Config config_links
+ 	./install.sh ${GROUP} ${USER} 555 bb_start32.pl ${DESTDIR}${BIN_DIR}/bb_start32
+ 	./install.sh ${GROUP} ${USER} 555 bb_stop32.pl ${DESTDIR}${BIN_DIR}/bb_stop32
+ 	./install.sh ${GROUP} ${USER} 555 platforms/Platforms.pm ${DESTDIR}${BIN_DIR}
+@@ -134,7 +134,7 @@
+ 	echo "*.fs_adm=@EX_ADM_DIR@" >> ${DESTDIR}${ETC_DIR}/resources
+ 	echo "*.fs_web=@EX_WEB_DIR@" >> ${DESTDIR}${ETC_DIR}/resources
+ 	echo "*.fs_run=@EX_RUN_DIR@" >> ${DESTDIR}${ETC_DIR}/resources
+-	./install.sh ${GROUP} ${USER} 755 -d ${DESTDIR}${BIN_DIR}/Monitor
++	./install.sh ${GROUP} ${USER} 755 -d ${DESTDIR}${UXMON_DIR}/Monitor
+ 	./install.sh ${GROUP} ${USER} 555 uxmon/Monitor/Monitor.pm ${DESTDIR}${BIN_DIR}/Monitor
+ 	./install.sh ${GROUP} ${USER} 555 uxmon/Monitor/bb.pm ${DESTDIR}${BIN_DIR}/Monitor
+ 	[ -f ${DESTDIR}${ADM_DIR}/resources ] || ./install.sh ${GROUP} ${USER} 644 etc/adm_resources ${DESTDIR}${ADM_DIR}/resources
