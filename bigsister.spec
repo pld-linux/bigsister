@@ -4,19 +4,19 @@
 # - subpackages for skins??????
 # - add patch and e-mail to author
 # - corect directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
-#
+# - check all patch, remove old
 
 #/TODO
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
-Version:	0.99b2
-Release:	3
+Version:	1.02
+Release:	0.1
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
-# Source0-md5:	ef4bc0ccb9a8f91e13f40eaa198a37ca
+# Source0-md5:	2516b00134465952982c234b4c91c350
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.bsmon.cfg
@@ -34,7 +34,7 @@ Patch4:		%{name}-not_user_check.patch
 URL:		http://bigsister.graeff.com/
 BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
-BuildRequires:	post-server-is-broken
+#BuildRequires:	post-server-is-broken
 BuildRequires:	rpm-perlprov >= 4.0.2-104
 BuildRequires:	rpmbuild(macros) >= 1.202
 Requires(post,preun):	/sbin/chkconfig
@@ -152,7 +152,7 @@ Big Sister plugin for monitoring using SNMP.
 Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 
 %prep
-%setup -q -n bs-%{version}
+%setup -q -n big-sister-%{version}
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -162,16 +162,35 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %build
 ./configure \
 	--with-user=bs \
-	--enable-FHS
+	--enable-fhs \
+	--with-cgi
 #	--with-url=/bs
+#  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+#  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+#  --enable-fhs       use file hierarchy standard install directories
+#  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+#  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+#  --with-systype     the target system type (e.g. sunos, windows, linux, etc.)
+#  --with-speedy      the CGI accelerators (e.g. speedy) path
+#  --with-cgi         the CGI path we should use
+#  --with-group       the group that will own your installed files
+#  --with-url         the URL at which we will find the web pages
+#  --with-perlext             the file extension perl scripts (CGIs) should get
+#  --with-rpmdir              the RPM build area
+
+
+
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,httpd/httpd.conf,cron.weekly},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
 
 %{__make} install-server install-client install-reporting \
-	install-modules install-doc DESTDIR=$RPM_BUILD_ROOT
+	install-agent install-modules install-doc \
+	DESTDIR=$RPM_BUILD_ROOT
 #install-win32
+
 mv -f	$RPM_BUILD_ROOT%{_sbindir}/* \
 	$RPM_BUILD_ROOT%{_bindir}
 
@@ -262,10 +281,8 @@ fi
 %{_datadir}/bigsister/bin/compile_skin white_bg
 
 if [ ! -f /etc/bigsister/password ]; then
-# FIXME $PASS variable cames from?
-	openssl rand -base64 6 > $PASS
-	/usr/bin/htpasswd -cb /etc/bigsister/password admin $PASS
-	echo "Your web password is: $PASS ."
+	/usr/bin/htpasswd -cb /etc/bigsister/password admin 'openssl rand -base64 6' 
+	echo "Your web password is in /etc/bigsister/password"
 	echo "Change this: htpasswd -b /etc/bigsister/password user password"
 fi
 
@@ -310,7 +327,7 @@ fi
 %{_datadir}/bigsister/bin/BS_unix.pm
 %{_datadir}/bigsister/bin/BigSister/common.pm
 %{_datadir}/bigsister/bin/[CHPRSTcp]*.pm
-%{_datadir}/bigsister/bin/Monitor/*.pm
+#%{_datadir}/bigsister/bin/Monitor/*.pm
 %{_datadir}/bigsister/bin/MicroTime.pm
 %{_datadir}/bigsister/bin/Reader/*pm
 %{_datadir}/bigsister/bin/BS_win32.pm
@@ -335,12 +352,12 @@ fi
 %{_datadir}/bigsister/uxmon/Config/r[ep]*
 %{_datadir}/bigsister/uxmon/Config/s[mty]*
 %dir %{_datadir}/bigsister/uxmon/Monitor
-%{_datadir}/bigsister/uxmon/Monitor/PerfLib.pm
-%{_datadir}/bigsister/uxmon/Monitor/eventlog.pm
-%{_datadir}/bigsister/uxmon/Monitor/[EMOTb-dfmpt-u]*
-%{_datadir}/bigsister/uxmon/Monitor/l[ox]*
-%{_datadir}/bigsister/uxmon/Monitor/r[ep]*
-%{_datadir}/bigsister/uxmon/Monitor/s[aty]*
+#{_datadir}/bigsister/uxmon/Monitor/PerfLib.pm
+#{_datadir}/bigsister/uxmon/Monitor/eventlog.pm
+#{_datadir}/bigsister/uxmon/Monitor/[EMOTb-dfmpt-u]*
+#{_datadir}/bigsister/uxmon/Monitor/l[ox]*
+#{_datadir}/bigsister/uxmon/Monitor/r[ep]*
+#{_datadir}/bigsister/uxmon/Monitor/s[aty]*
 %dir %{_datadir}/bigsister/uxmon/Requester
 %{_datadir}/bigsister/uxmon/Requester/[A-Za-rt-z]*
 %{_datadir}/bigsister/uxmon/Requester/s[oy]*
@@ -368,6 +385,9 @@ fi
 %{_sysconfdir}/bigsister/etc/moduleinfo/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/testdef
 %{_sysconfdir}/bigsister/etc/testdef/*
+%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/testdef
+%{_sysconfdir}/bigsister/etc/testdef/*
+
 %attr(755,root,root) %dir %{_datadir}/bigsister/cgi
 %attr(755,root,root) %{_datadir}/bigsister/cgi/bs*
 %attr(775,root,bs) %dir %{_var}/lib/bigsister
@@ -422,7 +442,7 @@ fi
 %attr(664,root,bs) %{_var}/lib/bigsister/www/skins/frames/*
 
 %{_var}/lib/bigsister/www/help/*.html
-%{_var}/lib/bigsister/www/help/*.jpg
+#%{_var}/lib/bigsister/www/help/*.jpg
 %{_var}/lib/bigsister/www/help/images/*png
 %{_datadir}/bigsister/www
 %dir %{_datadir}/bigsister/bin/Statusmon
@@ -447,22 +467,22 @@ fi
 %files ldap
 %defattr(644,root,root,755)
 %{_datadir}/bigsister/uxmon/Config/ldap
-%{_datadir}/bigsister/uxmon/Monitor/ldap.pm
+#%{_datadir}/bigsister/uxmon/Monitor/ldap.pm
 
 %files ldap_mozilla
 %defattr(644,root,root,755)
 %{_datadir}/bigsister/uxmon/Config/ldap_mozilla
-%{_datadir}/bigsister/uxmon/Monitor/ldap_mozilla.pm
+#%{_datadir}/bigsister/uxmon/Monitor/ldap_mozilla.pm
 
 %files oracle
 %defattr(644,root,root,755)
 %{_datadir}/bigsister/uxmon/Config/oracle
-%{_datadir}/bigsister/uxmon/Monitor/oracle.pm
+#%{_datadir}/bigsister/uxmon/Monitor/oracle.pm
 
 %files radius
 %defattr(644,root,root,755)
 %{_datadir}/bigsister/uxmon/Config/radius
-%{_datadir}/bigsister/uxmon/Monitor/radius.pm
+#%{_datadir}/bigsister/uxmon/Monitor/radius.pm
 
 %files snmp
 %defattr(644,root,root,755)
@@ -486,10 +506,10 @@ fi
 %{_datadir}/bigsister/uxmon/Config/ups
 %{_datadir}/bigsister/uxmon/Config/qmqueue
 %{_datadir}/bigsister/uxmon/Config/sendmail
-%{_datadir}/bigsister/uxmon/Monitor/atmport.pm
-%{_datadir}/bigsister/uxmon/Monitor/etherport.pm
-%{_datadir}/bigsister/uxmon/Monitor/snmp.pm
-%{_datadir}/bigsister/uxmon/Monitor/qmqueue.pm
-%{_datadir}/bigsister/uxmon/Monitor/sendmail.pm
-%{_datadir}/bigsister/uxmon/Monitor/snmp_trap.pm
+#%{_datadir}/bigsister/uxmon/Monitor/atmport.pm
+#%{_datadir}/bigsister/uxmon/Monitor/etherport.pm
+#%{_datadir}/bigsister/uxmon/Monitor/snmp.pm
+#%{_datadir}/bigsister/uxmon/Monitor/qmqueue.pm
+#%{_datadir}/bigsister/uxmon/Monitor/sendmail.pm
+#%{_datadir}/bigsister/uxmon/Monitor/snmp_trap.pm
 %{_datadir}/bigsister/uxmon/Requester/snmp.pm
