@@ -1,18 +1,19 @@
 # TODO
-# - corect path for files and directory in /etc/bigsister/etc/* - Patch5 (FHS)
+# - correct path for files and directory in /etc/bigsister/etc/* - Patch5 (FHS)
 # - security for webpage and admin page
 # - subpackages for skins??????
 # - add patch and e-mail to author
 # - correct directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
 # - check all patches, remove old
 # - todo webapps (sigh)
+# - uxmon to -agent (as done in spec in distro)
 
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	1.02
-Release:	2
+Release:	3
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -21,7 +22,6 @@ Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.bsmon.cfg
 Source4:	%{name}.uxmon-net
-Source5:	%{name}.htaccess
 Source6:	%{name}.uxmon-asroot
 Source7:	%{name}.httpd_conf
 Source8:	%{name}.mibs.txt
@@ -59,7 +59,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # perl-FCGI is recommended, but not required
 # perl-SNMP_Session is requires only for SNMP checks, but snmp.pm module
 # (which tests if SNMP_Session exists) must be present in base package
-%define		_noautoreq	'perl(common)' 'perl(parse)' 'perl(GD)' 'perl(FCGI)' 'perl(SNMP_Session)' 'perl(SNMP_util)' 'perl(BER)'
+%define		_noautoreq	'perl(common)' 'perl(parse)' 'perl(GD)' 'perl(FCGI)' 'perl(SNMP_Session)' 'perl(SNMP_util)' 'perl(BER)' 'perl(Monitor::Monitor)' 'perl(Monitor::Tester)' 'perl(Monitor::bb)'
+
+%define		_webapps	/etc/webapps
+%define		_webapp		%{name}
 
 %description
 Big Sister - a Big Brother clone.
@@ -79,6 +82,7 @@ Requires:	perl-Net-SMTP-Receive
 Requires:	perl-Net-SNMP
 Requires:	perl-libwww
 Requires:	rrdtool
+Requires:	webapps
 
 %description server
 Big Sister server part: display, status collector, alarm generator.
@@ -92,8 +96,8 @@ Summary:	Big Sister plugin for monitoring LDAP
 Summary(pl):	Wtyczka Big Sister do monitorowania LDAP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
-Requires:	apache >= 2.0
-Requires:	apache-mod_perl
+Requires:	webserver
+Requires:	apache(mod_perl)
 
 %description ldap
 Big Sister plugin for monitoring LDAP.
@@ -164,16 +168,12 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %build
 %{__autoconf}
 ./configure \
-	--with-user=bs \
 	--enable-FHS \
-	--with-cgi \
+	--with-user=bs \
+	--with-cgi=/bigsis/cgi \
+	--with-url=/bigsis \
 	--with-crondir=/etc/cron.weekly
-#	--with-url=/bs
-#  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
-#  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-#  --enable-fhs       use file hierarchy standard install directories
-#  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
-#  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+
 #  --with-systype     the target system type (e.g. sunos, windows, linux, etc.)
 #  --with-speedy      the CGI accelerators (e.g. speedy) path
 #  --with-cgi         the CGI path we should use
@@ -182,17 +182,16 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 #  --with-perlext             the file extension perl scripts (CGIs) should get
 #  --with-rpmdir              the RPM build area
 
+%{__make}
+
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,httpd/httpd.conf},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
+install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig},%{_var}/lib/bigsister/{graphs,www/graphs,logs}} \
+	$RPM_BUILD_ROOT%{_webapps}/%{_webapp}
 
-%{__make} -j1 \
-	install-server install-client install-reporting \
-	install-agent install-modules install-doc \
+%{__make} install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
 
-mv -f $RPM_BUILD_ROOT%{_sbindir}/* $RPM_BUILD_ROOT%{_bindir}
-rm -rf $RPM_BUILD_ROOT%{_sbindir}
 rm -rf $RPM_BUILD_ROOT/etc/init.d
 mv -f $RPM_BUILD_ROOT%{_datadir}/bigsister/etc $RPM_BUILD_ROOT%{_sysconfdir}/bigsister
 rm -rf	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc
@@ -224,10 +223,14 @@ rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/mibs.txt
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/bigsister/uxmon-asroot
-install %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/bigsister/cgi/.htaccess
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/httpd/httpd.conf/92_bigsister.conf
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/bigsister/etc/mibs.txt
+install %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
+install %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+install %{SOURCE8} $RPM_BUILD_ROOT/etc/bigsister/etc/mibs.txt
 
+touch $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/htpasswd
+
+# Dos/WinNT script
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/expedap/myexpedap.cmd
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -266,13 +269,6 @@ fi
 %{_datadir}/bigsister/bin/compile_skin twocolumn
 %{_datadir}/bigsister/bin/compile_skin default
 %{_datadir}/bigsister/bin/compile_skin white_bg
-
-if [ ! -f /etc/bigsister/password ]; then
-	/usr/bin/htpasswd -cb /etc/bigsister/password admin 'openssl rand -base64 6' 
-	echo "Your web password is in /etc/bigsister/password"
-	echo "Change this: htpasswd -b /etc/bigsister/password user password"
-fi
-
 %service -q bigsister restart
 
 %postun server
@@ -280,24 +276,53 @@ if [ "$1" = 0 ]; then
 	%service -q bigsister restart
 fi
 
+%triggerin server -- apache1
+%webapp_register apache %{_webapp}
+
+%triggerun server -- apache1
+%webapp_unregister apache %{_webapp}
+
+%triggerin server -- apache < 2.2.0, apache-base
+%webapp_register httpd %{_webapp}
+
+%triggerun server -- apache < 2.2.0, apache-base
+%webapp_unregister httpd %{_webapp}
+
+%triggerpostun server -- %{name}-server < 1.02-2.4
+# i don't even know why i wrote trigger, did package never ever worked?
+if [ -f /etc/httpd/httpd.conf/92_%{name}.conf.rpmsave ]; then
+	cp -f %{_webapps}/%{_webapp}/httpd.conf{,.rpmnew}
+	mv -f /etc/httpd/httpd.conf/92_%{name}.conf.rpmsave %{_webapps}/%{_webapp}/httpd.conf
+fi
+
+/usr/sbin/webapp register httpd %{_webapp}
+%service -q httpd reload
+
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/bs*
-%doc %{_datadir}/doc/bigsister 
+%doc %{_datadir}/doc/bigsister
 %attr(755,root,root) /etc/cron.weekly/bigsister_logs
 %attr(754,root,root) /etc/rc.d/init.d/bigsister
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/bigsister
-%{_mandir}/man*/*
 %attr(775,root,bs) %dir %{_sysconfdir}/bigsister
+%dir %{_sysconfdir}/bigsister/expedap
+%{_sysconfdir}/bigsister/expedap/myexpedap
 %attr(775,root,bs) %dir %{_sysconfdir}/bigsister/etc
 %attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/resources
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/OV
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/syslog
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/eventlog
 %attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/tests.cfg
+%attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/db.cfg
+%attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/*.dbschema
+%attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/version
+%attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/mibsdef
+%attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/mondef
 %attr(644,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/resources
 %attr(640,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/uxmon-net
 %attr(640,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/uxmon-asroot
+%attr(755,root,root) %{_sbindir}/bs*
+%{_mandir}/man*/*
 %dir %{_datadir}/bigsister
 %{_datadir}/bigsister/etc
 %{_datadir}/bigsister/var
@@ -307,6 +332,8 @@ fi
 %dir %{_datadir}/bigsister/bin/BigSister
 %{_datadir}/bigsister/bin/BS_unix.pm
 %{_datadir}/bigsister/bin/BigSister/common.pm
+%{_datadir}/bigsister/bin/DBCapsulator
+%{_datadir}/bigsister/bin/DBCapsulator.pm
 %{_datadir}/bigsister/bin/[CHPRSTcp]*.pm
 #%{_datadir}/bigsister/bin/Monitor/*.pm
 %{_datadir}/bigsister/bin/MicroTime.pm
@@ -352,20 +379,23 @@ fi
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/bsmon_site.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/notify.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/permissions
-%attr(664,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/httpd.conf/92_bigsister.conf
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/reporting
 %{_sysconfdir}/bigsister/reporting/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/bsmon.cfg
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/graphtemplates
 %attr(660,root,bs) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/bigsister/etc/keys
-%config(noreplace) %verify(not md5 mtime size) %{_datadir}/bigsister/cgi/.htaccess
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/graphdef
 %{_sysconfdir}/bigsister/etc/graphdef/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/moduleinfo
 %{_sysconfdir}/bigsister/etc/moduleinfo/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/testdef
 %{_sysconfdir}/bigsister/etc/testdef/*
+
+%dir %attr(750,root,http) %{_webapps}/%{_webapp}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/apache.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/httpd.conf
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/htpasswd
 
 %attr(755,root,root) %dir %{_datadir}/bigsister/cgi
 %attr(755,root,root) %{_datadir}/bigsister/cgi/bs*
@@ -421,8 +451,8 @@ fi
 %attr(664,root,bs) %{_var}/lib/bigsister/www/skins/frames/*
 
 %{_var}/lib/bigsister/www/help/*.html
-#%{_var}/lib/bigsister/www/help/*.jpg
-%{_var}/lib/bigsister/www/help/images/*png
+%{_var}/lib/bigsister/www/help/images/*.png
+%{_var}/lib/bigsister/www/help/images/*.jpg
 %{_datadir}/bigsister/www
 %dir %{_datadir}/bigsister/bin/Statusmon
 %{_datadir}/bigsister/bin/Statusmon/[BDGHRSTght]*.pm
