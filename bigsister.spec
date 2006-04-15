@@ -11,7 +11,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	1.02
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -28,6 +28,7 @@ Patch1:		%{name}-memory.patch
 Patch2:		%{name}-logfile-notranslated.patch
 Patch3:		%{name}-dubleinstall.patch
 Patch4:		%{name}-not_user_check.patch
+Patch5:		%{name}-ac.patch
 #Patch5:	%{name}-lang_lcmessages.patch
 #Patch6:	%{name}-path_to_adm.patch
 URL:		http://bigsister.graeff.com/
@@ -157,13 +158,15 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-#%patch5 -p1
-#%patch6 -p1
+%patch5 -p1
+
 %build
+%{__autoconf}
 ./configure \
 	--with-user=bs \
-	--enable-fhs \
-	--with-cgi
+	--enable-FHS \
+	--with-cgi \
+	--with-crondir=/etc/cron.weekly
 #	--with-url=/bs
 #  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
 #  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
@@ -177,10 +180,6 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 #  --with-url         the URL at which we will find the web pages
 #  --with-perlext             the file extension perl scripts (CGIs) should get
 #  --with-rpmdir              the RPM build area
-
-
-
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -364,8 +363,6 @@ fi
 %{_sysconfdir}/bigsister/etc/graphdef/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/moduleinfo
 %{_sysconfdir}/bigsister/etc/moduleinfo/*
-%attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/testdef
-%{_sysconfdir}/bigsister/etc/testdef/*
 %attr(750,root,bs) %dir %{_sysconfdir}/bigsister/etc/testdef
 %{_sysconfdir}/bigsister/etc/testdef/*
 
