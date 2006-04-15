@@ -5,6 +5,7 @@
 # - add patch and e-mail to author
 # - correct directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
 # - check all patches, remove old
+# - todo webapps (sigh)
 
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
@@ -183,7 +184,7 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,httpd/httpd.conf,cron.weekly},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
+install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,httpd/httpd.conf},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
 
 %{__make} -j1 \
 	install-server install-client install-reporting \
