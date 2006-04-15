@@ -1,0 +1,17 @@
+--- big-sister-1.02/configure.in~	2005-11-22 13:19:16.000000000 +0200
++++ big-sister-1.02/configure.in	2006-04-15 18:50:53.000000000 +0300
+@@ -256,11 +256,14 @@
+ 
+ AC_SUBST(crondir)
+ AC_MSG_CHECKING([where to store weekly cronjobs])
++AC_ARG_WITH(  crondir, [  --with-crondir 	     where to store weekly cronjobs],crondir=$withval)
++if test "$crondir" = ""; then
+ for dir in /etc/cron.weekly; do
+     if test -d $dir; then
+ 	    crondir=$dir
+     fi
+ done 
++fi
+ 
+ if test "$crondir" = ""; then
+     AC_MSG_RESULT(none)
