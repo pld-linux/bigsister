@@ -1,18 +1,17 @@
-#TODO
+# TODO
 # - corect path for files and directory in /etc/bigsister/etc/* - Patch5 (FHS)
 # - security for webpage and admin page
 # - subpackages for skins??????
 # - add patch and e-mail to author
-# - corect directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
-# - check all patch, remove old
+# - correct directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
+# - check all patches, remove old
 
-#/TODO
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	1.02
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -36,7 +35,8 @@ BuildRequires:	perl-libnet
 BuildRequires:	perl-libwww
 #BuildRequires:	post-server-is-broken
 BuildRequires:	rpm-perlprov >= 4.0.2-104
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	sed >= 4.0
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -186,37 +186,31 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/{rc.d/init.d,sysconfig,httpd/httpd.conf,cron.weekly},%{_var}/lib/bigsister{/graphs,/www/graphs,/logs}}
 
-%{__make} install-server install-client install-reporting \
+%{__make} -j1 \
+	install-server install-client install-reporting \
 	install-agent install-modules install-doc \
 	DESTDIR=$RPM_BUILD_ROOT
-#install-win32
 
-mv -f	$RPM_BUILD_ROOT%{_sbindir}/* \
-	$RPM_BUILD_ROOT%{_bindir}
-
-rm -rf	$RPM_BUILD_ROOT%{_sbindir}
-rm -rf	$RPM_BUILD_ROOT/etc/init.d
-
-mv -f	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc \
-	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister
-
+mv -f $RPM_BUILD_ROOT%{_sbindir}/* $RPM_BUILD_ROOT%{_bindir}
+rm -rf $RPM_BUILD_ROOT%{_sbindir}
+rm -rf $RPM_BUILD_ROOT/etc/init.d
+mv -f $RPM_BUILD_ROOT%{_datadir}/bigsister/etc $RPM_BUILD_ROOT%{_sysconfdir}/bigsister
 rm -rf	$RPM_BUILD_ROOT%{_datadir}/bigsister/etc
 
 cd $RPM_BUILD_ROOT%{_datadir}/bigsister
-ln -sf	%{_var}/lib/bigsister/www www
-ln -sf	%{_var}/lib/bigsister var
-ln -sf	%{_sysconfdir}/bigsister/etc etc
+ln -sf %{_var}/lib/bigsister/www www
+ln -sf %{_var}/lib/bigsister var
+ln -sf %{_sysconfdir}/bigsister/etc etc
 
-#correct path in files
-cat $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files | sed -e "s#$RPM_BUILD_ROOT##g" | sed -e "s#%{_datadir}/bigsister/etc#%{_sysconfdir}/bigsister/etc#g" > $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files.new
-rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files
-mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files.new \
-	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files
+# correct path in files
+sed -i -e "
+	s#$RPM_BUILD_ROOT##g
+	s#%{_datadir}/bigsister/etc#%{_sysconfdir}/bigsister/etc#g
+" $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/moduleinfo/files
 
-cat $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources | sed -e "s#%{_datadir}/bigsister/etc#%{_sysconfdir}/bigsister/etc#g" > $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new
-rm -rf	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources 
-mv -f	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources.new \
-	$RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources 
+sed -i -e '
+	s#%{_datadir}/bigsister/etc#%{_sysconfdir}/bigsister/etc#g
+' $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/etc/resources
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
@@ -226,7 +220,6 @@ rm -f $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
 rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 rm -f $RPM_BUILD_ROOT/etc/bigsister/httpd.conf
 rm -f $RPM_BUILD_ROOT/etc/bigsister/etc/mibs.txt
-
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/bigsister/etc/bsmon.cfg
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/bigsister/uxmon-net
@@ -245,17 +238,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add bigsister
-if [ -f /var/lock/subsys/bigsister ]; then
-	/etc/rc.d/init.d/bigsister restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/bigsister start\" to start Big Sister." >&2
-fi
+%service bigsister restart "Big Sister"
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/bigsister ]; then
-		/etc/rc.d/init.d/bigsister stop >&2
-	fi
+	%service bigsister stop
 	/sbin/chkconfig --del bigsister
 fi
 
@@ -286,17 +273,11 @@ if [ ! -f /etc/bigsister/password ]; then
 	echo "Change this: htpasswd -b /etc/bigsister/password user password"
 fi
 
-if [ -f /var/lock/subsys/bigsister ]; then
-	/etc/rc.d/init.d/bigsister restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/bigsister start\" to start Big Sister." >&2
-fi
+%service -q bigsister restart
 
 %postun server
-if [ -f /var/lock/subsys/bigsister ]; then
-	/etc/rc.d/init.d/bigsister restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/bigsister start\" to start Big Sister." >&2
+if [ "$1" = 0 ]; then
+	%service -q bigsister restart
 fi
 
 %files
