@@ -6,7 +6,7 @@ Alias /bs /var/lib/bigsister/www
 <Directory /var/lib/bigsister/www>
     AuthName "restricted area"
     AuthType Basic
-    AuthUserFile /etc/bigsister/password
+    AuthUserFile /etc/webapps/bigsister/htpasswd
     require valid-user
     Order allow,deny
     Allow from all
@@ -16,21 +16,18 @@ Alias /bs /var/lib/bigsister/www
 <Directory /usr/share/bigsister/cgi>
     AuthName "restricted area"
     AuthType Basic
-    AuthUserFile /etc/bigsister/password
+    AuthUserFile /etc/webapps/bigsister/htpasswd
     require valid-user
     Order allow,deny
     Allow from all
     Options -FollowSymLinks +ExecCGI
 
-<IfModule mod_perl.c>
-    <FilesMatch "\.mpl$">
-        SetHandler perl-script
-        PerlHandler Apache::Registry
-        PerlSendHeader On
-        PerlSetEnv PERL5LIB /usr/share/bigsister/bin
-    </FilesMatch>
-</IfModule>
-
+    <IfModule mod_perl.c>
+        <FilesMatch "\.mpl$">
+            SetHandler perl-script
+            PerlHandler Apache::Registry
+            PerlSendHeader On
+            PerlSetEnv PERL5LIB /usr/share/bigsister/bin
+        </FilesMatch>
+    </IfModule>
 </Directory>
-
-# vim: filetype=apache ts=4 sw=4 et
