@@ -37,7 +37,7 @@ case "$1" in
 			uxmonprefix="su - bs -s /bin/sh"
 		fi
 		umask 022
-	  	if [ -f /usr/share/bigsister/bin/bsmon ]; then
+		if [ -f /usr/share/bigsister/bin/bsmon ]; then
 			msg_starting "Big Sister bsmon"
 			$uxmonprefix -c "/usr/bin/setsid /usr/share/bigsister/bin/bsmon" > /dev/null 2>&1
 			RETVAL=$?
@@ -52,11 +52,11 @@ case "$1" in
 		for f in /etc/bigsister/uxmon-asroot* ; do
 			set `basename $f`
 			case $1 in
-			  *bak|*%|*~|*.rpmsave|*.rpmorig|*.rpmnew)
+			*bak|*%|*~|*.rpmsave|*.rpmorig|*.rpmnew)
 				continue
 				;;
-			  *)
-			  	msg_starting "Big Sister uxmon $1"
+			*)
+				msg_starting "Big Sister uxmon $1"
 				/bin/sh -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /usr/share/bigsister -c /etc/bigsister/uxmon-asroot" >/dev/null 2>&1
 				RETVAL=$?
 				[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
@@ -66,11 +66,11 @@ case "$1" in
 		for f in /etc/bigsister/uxmon-net* ; do
 			set `basename $f`
 			case $1 in
-			  *bak|*%|*~|*.rpmsave|*.rpmorig|*.rpmnew)
+			*bak|*%|*~|*.rpmsave|*.rpmorig|*.rpmnew)
 				continue
 				;;
-			  *)
-			  	msg_starting "Big Sister uxmon $1"
+			*)
+				msg_starting "Big Sister uxmon $1"
 				su - bs -s /bin/sh -c "/usr/bin/setsid /usr/share/bigsister/uxmon/uxmon -r /usr/share/bigsister/uxmon/uxmon-rules.pl -b /usr/share/bigsister -c /etc/bigsister/uxmon-net" >/dev/null 2>&1
 				RETVAL=$?
 				[ "$RETVAL" -eq 0 ] && ok || ( fail ; exit $RETVAL )
@@ -94,7 +94,7 @@ case "$1" in
 		killproc uxmon
 		msg_stopping "Big Sister uxmon"
 		killproc uxmon
-	       	msg_stopping "Big Sister bsmon if running"
+		msg_stopping "Big Sister bsmon if running"
 		killproc bsmon
 		msg_stopping "Big Sister bbd if running"
 		killproc bbd
@@ -102,10 +102,10 @@ case "$1" in
 		killproc bb_event_generator
 		msg_stopping "Big Sister bstrapd if running"
 		killproc bstrapd
-	rm -f /var/lock/subsys/bigsister
-        else
-                msg_not_running "Big Sister"
-        fi
+		rm -f /var/lock/subsys/bigsister
+	else
+		msg_not_running "Big Sister"
+	fi
 	;;
   status)
 	;;
