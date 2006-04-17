@@ -15,3 +15,14 @@
  
  if test "$crondir" = ""; then
      AC_MSG_RESULT(none)
+--- big-sister-1.02/Makefile.in~	2006-04-15 19:41:37.153389373 +0300
++++ big-sister-1.02/Makefile.in	2006-04-15 19:42:52.645071546 +0300
+@@ -37,7 +37,7 @@
+ all:
+ 	@echo "use 'make install' to install"
+ 
+-install: install-server install-client install-win32 install-reporting install-modules install-doc
++install: install-server install-client install-reporting install-modules install-doc
+ 
+ install-agent: install-client
+ 
