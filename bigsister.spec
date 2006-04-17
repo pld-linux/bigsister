@@ -13,7 +13,7 @@ Summary:	The Big Sister Network and System Monitor
 Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	1.02
-Release:	3
+Release:	4
 License:	GPL
 Group:		Networking
 Source0:	http://dl.sourceforge.net/bigsister/big-sister-%{version}.tar.gz
@@ -96,8 +96,8 @@ Summary:	Big Sister plugin for monitoring LDAP
 Summary(pl):	Wtyczka Big Sister do monitorowania LDAP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
-Requires:	webserver
 Requires:	apache(mod_perl)
+Requires:	webserver
 
 %description ldap
 Big Sister plugin for monitoring LDAP.
@@ -231,6 +231,7 @@ touch $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/htpasswd
 
 # Dos/WinNT script
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/bigsister/expedap/myexpedap.cmd
+rm -f $RPM_BUILD_ROOT%{_datadir}/bigsister/bin/{install32,perlsvc.pl}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
