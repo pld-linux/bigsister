@@ -174,13 +174,13 @@ Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
 	--with-url=/bigsis \
 	--with-crondir=/etc/cron.weekly
 
-#  --with-systype     the target system type (e.g. sunos, windows, linux, etc.)
-#  --with-speedy      the CGI accelerators (e.g. speedy) path
-#  --with-cgi         the CGI path we should use
-#  --with-group       the group that will own your installed files
-#  --with-url         the URL at which we will find the web pages
-#  --with-perlext             the file extension perl scripts (CGIs) should get
-#  --with-rpmdir              the RPM build area
+# --with-systype	the target system type (e.g. sunos, windows, linux, etc.)
+# --with-speedy		the CGI accelerators (e.g. speedy) path
+# --with-cgi		the CGI path we should use
+# --with-group		the group that will own your installed files
+# --with-url		the URL at which we will find the web pages
+# --with-perlext	the file extension perl scripts (CGIs) should get
+# --with-rpmdir		the RPM build area
 
 %{__make}
 
