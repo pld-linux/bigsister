@@ -5,7 +5,6 @@
 # - add patch and e-mail to author
 # - correct directory in /etc/bigsister/etc (some files to /usr/share, /var/lib)
 # - check all patches, remove old
-# - todo webapps (sigh)
 # - uxmon to -agent (as done in spec in distro)
 
 %include	/usr/lib/rpm/macros.perl
