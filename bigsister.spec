@@ -9,7 +9,7 @@
 
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
-Summary(pl):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
+Summary(pl.UTF-8):   Wielka Siostra - monitor sieci i systemÃ³w - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	1.02
 Release:	4
@@ -66,12 +66,12 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Big Sister - a Big Brother clone.
 
-%description -l pl
+%description -l pl.UTF-8
 Wielka Siostra - klon Wielkiego Brata.
 
 %package server
 Summary:	Big Sister server
-Summary(pl):	Serwer Big Sister
+Summary(pl.UTF-8):   Serwer Big Sister
 Group:		Networking
 Requires(post,postun):	%{name} = %{version}-%{release}
 Requires:	%{name} = %{version}-%{release}
@@ -86,13 +86,13 @@ Requires:	webapps
 %description server
 Big Sister server part: display, status collector, alarm generator.
 
-%description server -l pl
-Czê¶æ serwerowa Big Sister: wy¶wietlaj±ca, zbieraj±ca dane i
-generuj±ca alarmy.
+%description server -l pl.UTF-8
+CzÄ™Å›Ä‡ serwerowa Big Sister: wyÅ›wietlajÄ…ca, zbierajÄ…ca dane i
+generujÄ…ca alarmy.
 
 %package ldap
 Summary:	Big Sister plugin for monitoring LDAP
-Summary(pl):	Wtyczka Big Sister do monitorowania LDAP
+Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania LDAP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	apache(mod_perl)
@@ -101,24 +101,24 @@ Requires:	webserver
 %description ldap
 Big Sister plugin for monitoring LDAP.
 
-%description ldap -l pl
+%description ldap -l pl.UTF-8
 Wtyczka Big Sister do monitorowania LDAP.
 
 %package ldap_mozilla
 Summary:	Big Sister plugin for minitoring LDAP using Mozilla::LDAP
-Summary(pl):	Wtyczka Big Sister do monitorowania LDAP przy u¿yciu Mozilla::LDAP
+Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania LDAP przy uÅ¼yciu Mozilla::LDAP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 
 %description ldap_mozilla
 Big Sister plugin for monitoring LDAP using Mozilla::LDAP.
 
-%description ldap_mozilla -l pl
-Wtyczka Big Sister do monitorowania LDAP przy u¿yciu Mozilla::LDAP.
+%description ldap_mozilla -l pl.UTF-8
+Wtyczka Big Sister do monitorowania LDAP przy uÅ¼yciu Mozilla::LDAP.
 
 %package oracle
 Summary:	Big Sister plugin for monitoring Oracle
-Summary(pl):	Wtyczka Big Sister do monitorowania Oracle
+Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania Oracle
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	perl-DBD-Oracle
@@ -126,12 +126,12 @@ Requires:	perl-DBD-Oracle
 %description oracle
 Big Sister plugin for monitoring Oracle.
 
-%description oracle -l pl
+%description oracle -l pl.UTF-8
 Wtyczka Big Sister do monitorowania Oracle.
 
 %package radius
 Summary:	Big Sister plugin for monitoring radius server
-Summary(pl):	Wtyczka Big Sister do monitorowania serwera radius
+Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania serwera radius
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	perl-Authen-Radius
@@ -139,12 +139,12 @@ Requires:	perl-Authen-Radius
 %description radius
 Big Sister plugin for monitoring radius server.
 
-%description radius -l pl
+%description radius -l pl.UTF-8
 Wtyczka Big Sister do monitorowania serwera radius.
 
 %package snmp
 Summary:	Big Sister plugin for monitoring using SNMP
-Summary(pl):	Wtyczka Big Sister do monitorowania z u¿yciem SNMP
+Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania z uÅ¼yciem SNMP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	perl-SNMP
@@ -153,8 +153,8 @@ Requires:	perl-SNMP
 %description snmp
 Big Sister plugin for monitoring using SNMP.
 
-%description snmp -l pl
-Wtyczka Big Sister do monitorowania z u¿yciem SNMP.
+%description snmp -l pl.UTF-8
+Wtyczka Big Sister do monitorowania z uÅ¼yciem SNMP.
 
 %prep
 %setup -q -n big-sister-%{version}
