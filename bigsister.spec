@@ -9,7 +9,7 @@
 
 %include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
-Summary(pl.UTF-8):   Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
+Summary(pl.UTF-8):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
 Version:	1.02
 Release:	4
@@ -71,7 +71,7 @@ Wielka Siostra - klon Wielkiego Brata.
 
 %package server
 Summary:	Big Sister server
-Summary(pl.UTF-8):   Serwer Big Sister
+Summary(pl.UTF-8):	Serwer Big Sister
 Group:		Networking
 Requires(post,postun):	%{name} = %{version}-%{release}
 Requires:	%{name} = %{version}-%{release}
@@ -92,7 +92,7 @@ generująca alarmy.
 
 %package ldap
 Summary:	Big Sister plugin for monitoring LDAP
-Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania LDAP
+Summary(pl.UTF-8):	Wtyczka Big Sister do monitorowania LDAP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	apache(mod_perl)
@@ -106,7 +106,7 @@ Wtyczka Big Sister do monitorowania LDAP.
 
 %package ldap_mozilla
 Summary:	Big Sister plugin for minitoring LDAP using Mozilla::LDAP
-Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania LDAP przy użyciu Mozilla::LDAP
+Summary(pl.UTF-8):	Wtyczka Big Sister do monitorowania LDAP przy użyciu Mozilla::LDAP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 
@@ -118,7 +118,7 @@ Wtyczka Big Sister do monitorowania LDAP przy użyciu Mozilla::LDAP.
 
 %package oracle
 Summary:	Big Sister plugin for monitoring Oracle
-Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania Oracle
+Summary(pl.UTF-8):	Wtyczka Big Sister do monitorowania Oracle
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	perl-DBD-Oracle
@@ -131,7 +131,7 @@ Wtyczka Big Sister do monitorowania Oracle.
 
 %package radius
 Summary:	Big Sister plugin for monitoring radius server
-Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania serwera radius
+Summary(pl.UTF-8):	Wtyczka Big Sister do monitorowania serwera radius
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	perl-Authen-Radius
@@ -144,7 +144,7 @@ Wtyczka Big Sister do monitorowania serwera radius.
 
 %package snmp
 Summary:	Big Sister plugin for monitoring using SNMP
-Summary(pl.UTF-8):   Wtyczka Big Sister do monitorowania z użyciem SNMP
+Summary(pl.UTF-8):	Wtyczka Big Sister do monitorowania z użyciem SNMP
 Group:		Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	perl-SNMP
