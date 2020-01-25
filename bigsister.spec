@@ -7,7 +7,6 @@
 # - check all patches, remove old
 # - uxmon to -agent (as done in spec in distro)
 
-%include	/usr/lib/rpm/macros.perl
 Summary:	The Big Sister Network and System Monitor
 Summary(pl.UTF-8):	Wielka Siostra - monitor sieci i systemów - klon komercyjnego BigBrother
 Name:		bigsister
