@@ -157,11 +157,11 @@ Wtyczka Big Sister do monitorowania z użyciem SNMP.
 
 %prep
 %setup -q -n big-sister-%{version}
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
 
 %build
 %{__autoconf}
